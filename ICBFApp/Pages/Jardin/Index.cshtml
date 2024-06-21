@@ -1,0 +1,34 @@
+﻿@page
+@model ICBFApp.Pages.Jardin.IndexModel
+@{
+}
+<br />
+<h2>Lista de Jardínes</h2>
+<a class="btn btn-primary btn-sm" href="/Jardin/Create">Nuevo Jardín</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <td>ID</td>
+            <td>Nombre</td>
+            <td>Dirección</td>
+            <td>Estado</td>
+            <td>Acciones</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.listJardin)
+        {
+            <tr>
+                <td>@item.pkIdJardin</td>
+                <td>@item.nombre</td>
+                <td>@item.direccion</td>
+                <td>@item.estado</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" href="/Jardin/Edit?id=@item.pkIdJardin">Editar</a>
+                    <a class="btn btn-danger btn-sm" href="/Jardin/Delete?id=@item.pkIdJardin">Borrar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

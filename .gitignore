@@ -1,0 +1,42 @@
+# Visual Studio files
+.vs/
+*.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln.docstates
+*.user
+*.userosscache
+*.sln.ide
+*.sqlite
+
+# Resharper files
+_ReSharper*/
+
+# Rider files
+.idea/
+
+# Visual Studio Code files
+.vscode/
+
+# Build results
+bin/
+obj/
+
+# NuGet Packages
+*.nupkg
+*.paket/paket-files/
+
+# .NET Core
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+
+# Visual Studio profiling
+*.vsp
+
+# Others
+*.DS_Store
+Thumbs.db

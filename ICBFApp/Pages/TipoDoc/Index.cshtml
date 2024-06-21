@@ -1,0 +1,30 @@
+﻿@page
+@model ICBFApp.Pages.TipoDoc.IndexModel
+@{
+}
+<br />
+<h2>Lista de TIPODOC</h2>
+<a class="btn btn-primary btn-sm" href="/Jardin/Create">Nuevo Jardín</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <td>ID</td>
+            <td>Tipo</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.listTipoDoc)
+        {
+            <tr>
+                <td>@item.pkIdTipoDoc</td>
+                <td>@item.tipo</td>
+
+                <td>
+                    <a class="btn btn-primary btn-sm" href="/Jardin/Edit?id=@item.pkIdTipoDoc">Editar</a>
+                    <a class="btn btn-danger btn-sm" href="/Jardin/Delete?id=@item.pkIdTipoDoc">Borrar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

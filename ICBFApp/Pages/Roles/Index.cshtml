@@ -1,0 +1,31 @@
+﻿@page
+@model ICBFApp.Pages.Roles.IndexModel
+@{
+}
+
+
+<br />
+<h2>Lista de Roles</h2>
+<a class="btn btn-primary btn-sm" href="/Roles/Create">Nuevo Rol</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <td>ID</td>
+            <td>Tipo</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.listRol)
+        {
+            <tr>
+                <td>@item.pkIdRol</td>
+                <td>@item.tipo</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" href="/Roles/Edit?id=@item.pkIdRol">Editar</a>
+                    <a class="btn btn-danger btn-sm" href="/Roles/Delete?id=@item.pkIdRol">Borrar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

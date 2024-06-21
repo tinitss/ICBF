@@ -1,0 +1,106 @@
+﻿@page
+@model ICBFApp.Pages.Usuarios.CreateModel
+@{
+}
+<br>
+<h2>Agregar Nuevo Usuario</h2>
+
+@* Muestra mensaje de error al no completar todos los campos del formulario *@
+@if (Model.errorMessage.Length > 0)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>@Model.errorMessage</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+    </div>
+}
+
+<form method="POST">
+    <div class="row mb-3">
+        <label class="col-form-label-sm col-form-label">Identificación</label>
+        <div class="col-sm-6">
+            <input type="number" class="form-control" name="identificacion" value="@Model.usuarioInfo.identificacion">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-form-label-sm col-form-label">Nombres</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="nombre" value="@Model.usuarioInfo.nombre">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-form-label-sm col-form-label">Fecha de nacimiento</label>
+        <div class="col-sm-6">
+            <input type="date" class="form-control" name="fechaNacimiento" value="@Model.usuarioInfo.fechaNacimiento">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-form-label-sm col-form-label">Teléfono </label>
+        <div class="col-sm-6">
+            <input type="number" class="form-control" name="telefono" value="@Model.usuarioInfo.telefono">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-form-label-sm col-form-label">Correo </label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="correo" value="@Model.usuarioInfo.correo">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-form-label-sm col-form-label">Dirección</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="direccion" value="@Model.usuarioInfo.direccion">
+        </div>
+    </div>
+
+    @* Método para mostrar los roles de la base de datos en el formulario de personas *@
+    <div class="row mb-3">
+        <label class="col-form-label-sm col-form-label" for="rol">Seleccione un Rol</label>
+        <div class="col-sm-6">
+            <select id="rol" name="tipo" class="form-control">
+                <option value="">Seleccione un Rol</option>
+                @foreach (var rol in Model.rolInfo)
+                {
+                    <option value="@rol.pkIdRol">@rol.tipo</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label class="col-form-label-sm col-form-label" for="rol">Seleccione un Tipo de documento</label>
+        <div class="col-sm-6">
+            <select id="tipoDoc" name="tipoDoc" class="form-control">
+                <option value="">Seleccione un Tipo de documentol</option>
+                @foreach (var tipoDoc in Model.tipoDocInfo)
+                {
+                    <option value="@tipoDoc.pkIdTipoDoc">@tipoDoc.tipo</option>
+                }
+            </select>
+        </div>
+    </div>
+
+
+
+    @* Muestra mensaje de éxito al agregar un nuevo usuario *@
+    @if (Model.successMessage.Length > 0)
+    {
+        <div class="row mb-3">
+            <div class="col-sm-9">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>@Model.successMessage</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row mb-3">
+        <div class="offset-sm-3 col-sm-3 d-grid">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+        <div class="col-sm-3 d-grid">
+            <a class="btn btn-outline-primary" href="/Usuarios/Index" role="button">Cancel</a>
+        </div>
+    </div>
+
+</form>
