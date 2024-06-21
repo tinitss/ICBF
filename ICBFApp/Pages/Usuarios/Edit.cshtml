@@ -60,9 +60,9 @@
 
 
     <div class="row mb-3">
-        <label class="col-form-label-sm col-form-label" for="rol">Seleccione un Rol</label>
+        <label class="col-form-label-sm col-form-label">Seleccione un Rol</label>
         <div class="col-sm-6">
-            <select id="rol" name="tipo" class="form-control">
+            <select class="form-control" asp-for="usuarioInfo.fkIdRol">
                 <option value="">Seleccione un Rol</option>
                 @foreach (var rol in Model.rolInfo)
                 {
@@ -73,10 +73,10 @@
     </div>
 
     <div class="row mb-3">
-        <label class="col-form-label-sm col-form-label" for="rol">Seleccione un Tipo de documento</label>
+        <label class="col-form-label-sm col-form-label">Seleccione un Tipo de documento</label>
         <div class="col-sm-6">
-            <select id="tipoDoc" name="tipoDoc" class="form-control">
-                <option value="">Seleccione un Tipo de documentol</option>
+            <select class="form-control" asp-for="usuarioInfo.fkIdTipoDoc">
+                <option value="">Seleccione un Tipo de documento</option>
                 @foreach (var tipoDoc in Model.tipoDocInfo)
                 {
                     <option value="@tipoDoc.pkIdTipoDoc">@tipoDoc.tipo</option>

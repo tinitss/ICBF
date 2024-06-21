@@ -7,13 +7,15 @@ namespace ICBFApp.Pages.Usuarios
 {
     public class IndexModel : PageModel
     {
+        //CONEXIÓN
+        //String connectionString = "Data Source=GAES3\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
+        String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
         public List<UsuarioInfo> listUsuario = new List<UsuarioInfo>();
         public void OnGet()
         {
             try
             {
-                 String connectionString = "Data Source=GAES3\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
-                //String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
+                 
 
 
                 using (SqlConnection connection = new SqlConnection(connectionString))

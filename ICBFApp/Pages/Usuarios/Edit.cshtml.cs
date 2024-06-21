@@ -9,13 +9,16 @@ namespace ICBFApp.Pages.Usuarios
 {
     public class EditModel : PageModel
     {
+        //CONEXIÓN
+        //String connectionString = "Data Source=GAES3\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
+        String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True";
+
         public List<RolInfo> rolInfo { get; set; } = new List<RolInfo>();
         public List<TipoDocInfo> tipoDocInfo { get; set; } = new List<TipoDocInfo>();
         public UsuarioInfo usuarioInfo = new UsuarioInfo();
         public string errorMessage = "";
         public string successMessage = "";
-        String connectionString = "Data Source=GAES3\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
-        //String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True";
+        
         public void OnGet()
         {
             String id = Request.Query["id"];
@@ -56,15 +59,13 @@ namespace ICBFApp.Pages.Usuarios
         
 
             try
-            {
-                //String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
-                String connectionString = "Data Source=GAES3\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
+            {               
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
                     String sql = "SELECT pkIdRol, tipo FROM roles";
-                    //Console.WriteLine(sql);
+                    
                     using (SqlCommand command = new SqlCommand(sql, connection))
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
@@ -113,8 +114,7 @@ namespace ICBFApp.Pages.Usuarios
 
             try
             {
-                //String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
-                String connectionString = "Data Source=GAES3\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
+
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
@@ -177,9 +177,11 @@ namespace ICBFApp.Pages.Usuarios
             usuarioInfo.direccion = Request.Form["direccion"];
             usuarioInfo.fkIdRol = Request.Form["fkIdRol"];
             usuarioInfo.fkIdTipoDoc = Request.Form["fkIdTipoDoc"];
+            
 
 
-           if (usuarioInfo.pkIdUsuario.Length == 0 || usuarioInfo.identificacion.Length == 0 
+
+            if (usuarioInfo.pkIdUsuario.Length == 0 || usuarioInfo.identificacion.Length == 0 
                 || usuarioInfo.nombre.Length == 0 || usuarioInfo.fechaNacimiento.Length == 0
                 || usuarioInfo.telefono.Length == 0 || usuarioInfo.correo.Length == 0
                 || usuarioInfo.direccion.Length == 0 )
@@ -204,12 +206,10 @@ namespace ICBFApp.Pages.Usuarios
                         command.Parameters.AddWithValue("@fechaNacimiento", usuarioInfo.fechaNacimiento);
                         command.Parameters.AddWithValue("@telefono", usuarioInfo.telefono);
                         command.Parameters.AddWithValue("@correo", usuarioInfo.correo);
+                        command.Parameters.AddWithValue("@direccion", usuarioInfo.direccion);
                         command.Parameters.AddWithValue("@fkIdRol", usuarioInfo.fkIdRol);
                         command.Parameters.AddWithValue("@fkIdTipoDoc", usuarioInfo.fkIdTipoDoc);
                         
-
-                        command.Parameters.AddWithValue("@nombre", usuarioInfo.nombre);
-
                         command.ExecuteNonQuery();
                     }
                 }

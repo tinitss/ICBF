@@ -11,6 +11,9 @@ namespace ICBFApp.Pages.Usuarios
 {
     public class CreateModel : PageModel
     {
+        //CONEXIÓN BD
+        String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
+        //String connectionString = "Data Source=GAES3\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
         public List<RolInfo> rolInfo { get; set; } = new List<RolInfo>();
         public List<TipoDocInfo> tipoDocInfo { get; set; } = new List<TipoDocInfo>();
         public UsuarioInfo usuarioInfo = new UsuarioInfo();
@@ -20,8 +23,7 @@ namespace ICBFApp.Pages.Usuarios
         {
             try
             {
-                //String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
-                String connectionString = "Data Source=GAES3\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
+                
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
@@ -76,8 +78,7 @@ namespace ICBFApp.Pages.Usuarios
 
          try
             {
-                //String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
-                String connectionString = "Data Source=GAES3\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
+                
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
@@ -167,8 +168,7 @@ namespace ICBFApp.Pages.Usuarios
 
             try
             {
-                //String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
-                String connectionString = "Data Source=GAES3\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
+                
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
