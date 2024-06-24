@@ -3,8 +3,8 @@
 @{
 }
 <br />
-<h2>Lista de TIPODOC</h2>
-<a class="btn btn-primary btn-sm" href="/Jardin/Create">Nuevo Jardín</a>
+<h2>Lista de Tipo de documentos</h2>
+<a class="btn btn-primary btn-sm" href="/TipoDoc/Create">Nuevo Tipo de Documento</a>
 
 <table class="table">
     <thead>
@@ -21,8 +21,8 @@
                 <td>@item.tipo</td>
 
                 <td>
-                    <a class="btn btn-primary btn-sm" href="/Jardin/Edit?id=@item.pkIdTipoDoc">Editar</a>
-                    <a class="btn btn-danger btn-sm" href="/Jardin/Delete?id=@item.pkIdTipoDoc">Borrar</a>
+                    <a class="btn btn-primary btn-sm" href="/TipoDoc/Edit?id=@item.pkIdTipoDoc">Editar</a>
+                    <a class="btn btn-danger btn-sm" href="/TipoDoc/Delete?id=@item.pkIdTipoDoc">Borrar</a>
                 </td>
             </tr>
         }

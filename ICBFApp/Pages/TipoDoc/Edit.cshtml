@@ -1,9 +1,9 @@
 ﻿@page
-@model ICBFApp.Pages.TipoDoc.CreateModel
+@model ICBFApp.Pages.TipoDoc.EditModel
 @{
 }
 <br />
-<h2>Agregar Nuevo Tipo de documento</h2>
+<h2>Editar Tipo de Documento</h2>
 
 @if (Model.errorMessage.Length > 0)
 {
@@ -13,7 +13,9 @@
     </div>
 }
 
+
 <form method="POST">
+    <input type="hidden" class="form-control" name="id" value="@Model.tipoDocInfo.pkIdTipoDoc" />
     <div class="row mb-3">
         <label class="col-form-label-sm col-form-label" for="SelectedTipoDocId">Selecciona un Tipo de Documento:</label>
         <div class="col-sm-6">
@@ -24,6 +26,7 @@
                 <option value="CE">CE</option>
                 <option value="RC">RC</option>
                 <option value="NIUP">NIUP</option>
+
             </select>
         </div>
     </div>
@@ -42,7 +45,7 @@
 
     <div class="row mb-3">
         <div class="offset-sm-3 col-sm-3 d-grid">
-            <button type="submit" class="btn btn-primary">Agregar</button>
+            <button type="submit" class="btn btn-primary">Editar</button>
         </div>
         <div class="col-sm-3 d-grid">
             <a class="btn btn-outline-primary" href="/TipoDoc/Index" role="button">Cancelar</a>

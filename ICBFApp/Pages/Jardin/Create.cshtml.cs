@@ -7,6 +7,9 @@ namespace ICBFApp.Pages.Jardin
 {
     public class CreateModel : PageModel
     {
+        //String connectionString = "Data Source=BOGAPRCSFFSD121\\SQLEXPRESS;Initial Catalog=icbf;Integrated Security=True;";
+        String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True";
+
         public JardinInfo jardinInfo = new JardinInfo();
         public string errorMessage = "";
         public string successMessage = "";
@@ -29,10 +32,6 @@ namespace ICBFApp.Pages.Jardin
 
             try
             {
-                //String connectionString = "Data Source=BOGAPRCSFFSD121\\SQLEXPRESS;Initial Catalog=icbf;Integrated Security=True;";
-                String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True";
-
-
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();

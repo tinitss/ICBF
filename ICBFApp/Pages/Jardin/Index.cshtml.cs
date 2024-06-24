@@ -6,16 +6,15 @@ namespace ICBFApp.Pages.Jardin
 {
     public class IndexModel : PageModel
     {
+        //String connectionString = "Data Source=BOGAPRCSFFSD121\\SQLEXPRESS;Initial Catalog=icbf;Integrated Security=True;";
+        String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
         public List<JardinInfo> listJardin = new List<JardinInfo>();
 
         public void OnGet()
         {
             try
             {
-                //String connectionString = "Data Source=BOGAPRCSFFSD121\\SQLEXPRESS;Initial Catalog=icbf;Integrated Security=True;";
-                String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
-
-
+                
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();

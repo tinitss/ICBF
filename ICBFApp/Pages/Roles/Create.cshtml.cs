@@ -7,6 +7,8 @@ namespace ICBFApp.Pages.Roles
 {
     public class CreateModel : PageModel
     {
+        //String connectionString = "Data Source=BOGAPRCSFFSD121\\SQLEXPRESS;Initial Catalog=icbf;Integrated Security=True;";
+        String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True";
 
         public RolInfo rolInfo = new RolInfo();
         public string errorMessage = "";
@@ -28,10 +30,7 @@ namespace ICBFApp.Pages.Roles
 
             try
             {
-                //String connectionString = "Data Source=BOGAPRCSFFSD121\\SQLEXPRESS;Initial Catalog=icbf;Integrated Security=True;";
-                String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True";
-
-
+                
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();

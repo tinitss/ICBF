@@ -87,16 +87,7 @@ namespace ICBFApp.Pages.Roles
                         }
                     }
 
-                    // Espacio para validar que el rol no exista
-                    String sqlInsert = "UPDATE INTO roles (tipo)" +
-                        "VALUES (@tipo);";
-
-                    using (SqlCommand command = new SqlCommand(sqlInsert, connection))
-                    {
-                        command.Parameters.AddWithValue("@tipo", rolInfo.tipo);
-
-                        command.ExecuteNonQuery();
-                    }
+                    
                     String sqlUpdate = "UPDATE roles SET tipo = @tipo WHERE pkIdRol = @id";
                     using (SqlCommand command = new SqlCommand(sqlUpdate, connection))
                     {

@@ -1,22 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data.SqlClient;
-using static ICBFApp.Pages.Jardin.IndexModel;
 using static ICBFApp.Pages.TipoDoc.IndexModel;
 
 namespace ICBFApp.Pages.TipoDoc
 {
     public class IndexModel : PageModel
     {
+        //String connectionString = "Data Source=BOGAPRCSFFSD121\\SQLEXPRESS;Initial Catalog=icbf;Integrated Security=True;";
+        String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
+
         public List<TipoDocInfo> listTipoDoc = new List<TipoDocInfo>();
         public void OnGet()
         {
             try
-            {
-                //String connectionString = "Data Source=BOGAPRCSFFSD121\\SQLEXPRESS;Initial Catalog=icbf;Integrated Security=True;";
-                String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
-
-
+            {            
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();

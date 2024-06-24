@@ -1,28 +1,63 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data.SqlClient;
-using static ICBFApp.Pages.Roles.IndexModel;
 using static ICBFApp.Pages.TipoDoc.IndexModel;
 
 namespace ICBFApp.Pages.TipoDoc
 {
-    public class CreateModel : PageModel
+    public class EditModel : PageModel
     {
-        //String connectionString = "Data Source=BOGAPRCSFFSD121\\SQLEXPRESS;Initial Catalog=icbf;Integrated Security=True;";
-        String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True";
-
         public TipoDocInfo tipoDocInfo = new TipoDocInfo();
         public string errorMessage = "";
         public string successMessage = "";
+
+
+        //CONEXIÓN CON BD
+        //String connectionString = "Data Source=BOGAPRCSFFSD121\\SQLEXPRESS;Initial Catalog=icbf;Integrated Security=True;";
+        String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True";
         public void OnGet()
         {
-        }
 
+            String id = Request.Query["id"];
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+
+
+                    String sql = "SELECT * FROM tipoDoc WHERE pkIdTipoDoc = @id";
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        command.Parameters.AddWithValue("@id", id);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                tipoDocInfo.pkIdTipoDoc = "" + reader.GetInt32(0);
+                                tipoDocInfo.tipo = reader.GetString(1);
+                            }
+                        }
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                return;
+            }
+        }
         public void OnPost()
         {
+            tipoDocInfo.pkIdTipoDoc = Request.Form["id"];
             tipoDocInfo.tipo = Request.Form["tipo"];
 
-            if (tipoDocInfo.tipo.Length == 0)
+
+            if (tipoDocInfo.pkIdTipoDoc.Length == 0 || tipoDocInfo.tipo.Length == 0)
             {
                 errorMessage = "Debe completar todos los campos";
                 return;
@@ -30,10 +65,10 @@ namespace ICBFApp.Pages.TipoDoc
 
             try
             {
-
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
+
 
                     //VERIFICA QUE EL ADMINISTRADOR NO EXISTA
                     String sqlExists = "SELECT COUNT(*) FROM tipoDoc WHERE tipo = @tipo";
@@ -50,17 +85,15 @@ namespace ICBFApp.Pages.TipoDoc
                         }
                     }
 
-                    // Espacio para validar que el rol no exista
-                    String sqlInsert = "INSERT INTO tipoDoc (tipo)" +
-                        "VALUES (@tipo);";
 
-                    using (SqlCommand command = new SqlCommand(sqlInsert, connection))
+                    String sqlUpdate = "UPDATE tipoDoc SET tipo = @tipo WHERE pkIdTipoDoc = @id";
+                    using (SqlCommand command = new SqlCommand(sqlUpdate, connection))
                     {
+                        command.Parameters.AddWithValue("@id", tipoDocInfo.pkIdTipoDoc);
                         command.Parameters.AddWithValue("@tipo", tipoDocInfo.tipo);
 
                         command.ExecuteNonQuery();
                     }
-
                 }
             }
             catch (Exception ex)
@@ -69,11 +102,8 @@ namespace ICBFApp.Pages.TipoDoc
                 return;
             }
 
-            tipoDocInfo.tipo = "";
-
-
-            successMessage = "Tipo de Documento agregado con éxito";
             Response.Redirect("/TipoDoc/Index");
         }
+
     }
 }
