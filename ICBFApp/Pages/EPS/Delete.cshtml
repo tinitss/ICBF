@@ -11,7 +11,7 @@
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
             connection.Open();
-            String sqlDelete = "DELETE FROM usuarios WHERE pkIdUsuario = @id";
+            String sqlDelete = "DELETE FROM eps WHERE pkIdEps = @id";
             using (SqlCommand command = new SqlCommand(sqlDelete, connection))
             {
                 command.Parameters.AddWithValue("@id", id);
@@ -32,5 +32,5 @@
 
     }
 
-    Response.Redirect("/Usuarios/Index");
+    Response.Redirect("/EPS/Index");
 }

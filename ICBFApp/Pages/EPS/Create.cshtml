@@ -1,0 +1,73 @@
+﻿@page
+@model ICBFApp.Pages.EPS.CreateModel
+@{
+}
+
+<br />
+<h2>Agregar Nueva EPS</h2>
+
+@if (Model.errorMessage.Length > 0)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>@Model.errorMessage</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+    </div>
+}
+
+<form method="POST">
+    <div class="row mb-3">
+        <label class="col-form-label-sm col-form-label">Nit EPS</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="nit" value="@Model.epsInfo.nit">
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label class="col-form-label-sm col-form-label">Nombre EPS</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="nombre" value="@Model.epsInfo.nombre">
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label class="col-form-label-sm col-form-label">Centro Médico</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="centroMedico" value="@Model.epsInfo.centroMedico">
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label class="col-form-label-sm col-form-label">Dirección Centro Médico</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="direccion" value="@Model.epsInfo.direccion">
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label class="col-form-label-sm col-form-label">Teléfono</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="telefono" value="@Model.epsInfo.telefono">
+        </div>
+    </div>
+
+    @if (Model.successMessage.Length > 0)
+    {
+        <div class="row mb-3">
+            <div class="col-sm-9">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>@Model.successMessage</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row mb-3">
+        <div class="offset-sm-3 col-sm-3 d-grid">
+            <button type="submit" class="btn btn-primary">Agregar</button>
+        </div>
+        <div class="col-sm-3 d-grid">
+            <a class="btn btn-outline-primary" href="/EPS/Index" role="button">Cancelar</a>
+        </div>
+    </div>
+</form>

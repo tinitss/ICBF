@@ -1,4 +1,77 @@
 ﻿@page
 @model ICBFApp.Pages.Ninos.CreateModel
 @{
+    ViewData["Title"] = "Crear Niño";
 }
+
+<h2>Crear Niño</h2>
+
+@if (!string.IsNullOrEmpty(Model.errorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @Model.errorMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.successMessage))
+{
+    <div class="alert alert-success" role="alert">
+        @Model.successMessage
+    </div>
+}
+
+<form method="post">
+    <div class="form-group">
+        <label>NIUP</label>
+        <input type="text" class="form-control" asp-for="ninoInfo.niup">
+    </div>
+    <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" class="form-control" asp-for="ninoInfo.nombre">
+    </div>
+    <div class="form-group">
+        <label>Fecha de Nacimiento</label>
+        <input type="date" class="form-control" asp-for="ninoInfo.fechaNacimiento">
+    </div>
+    <div class="form-group">
+        <label>Tipo de Sangre</label>
+        <select class="form-control" asp-for="ninoInfo.tipoSangre">
+            <option value="A">A</option>
+            <option value="O">O</option>
+            <option value="B">B</option>
+            <option value="AB">AB</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Ciudad de Nacimiento</label>
+        <input type="text" class="form-control" asp-for="ninoInfo.ciudadNacimiento">
+    </div>
+    <div class="form-group">
+        <label>EPS</label>
+        <select class="form-control" asp-for="ninoInfo.fkIdEps">
+            @foreach (var eps in Model.epsInfo)
+            {
+                <option value="@eps.pkIdEps">@eps.nombre</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Jardín</label>
+        <select class="form-control" asp-for="ninoInfo.fkIdJardin">
+            @foreach (var jardin in Model.jardinInfo)
+            {
+                <option value="@jardin.pkIdJardin">@jardin.nombre</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Usuario</label>
+        <select class="form-control" asp-for="ninoInfo.fkIdUsuario">
+            @foreach (var usuario in Model.usuarioInfo)
+            {
+                <option value="@usuario.pkIdUsuario">@usuario.nombre</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Crear Niño</button>
+</form>

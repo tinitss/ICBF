@@ -1,4 +1,46 @@
 ﻿@page
 @model ICBFApp.Pages.Ninos.IndexModel
 @{
+    ViewData["Title"] = "Lista de Niños";
 }
+
+<br />
+<h2>Lista de Niños</h2>
+<a class="btn btn-primary btn-sm" href="/Ninos/Create">Nuevo Niño</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>NIUP</th>
+            <th>Nombre</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Tipo de Sangre</th>
+            <th>Ciudad de Nacimiento</th>
+            <th>EPS</th>
+            <th>Jardín</th>
+            <th>Usuario</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.listNinos)
+        {
+            <tr>
+                <td>@item.pkIdNino</td>
+                <td>@item.niup</td>
+                <td>@item.nombre</td>
+                <td>@item.fechaNacimiento.ToShortDateString()</td>
+                <td>@item.tipoSangre</td>
+                <td>@item.ciudadNacimiento</td>
+                <td>@item.nombre_eps</td>
+                <td>@item.nombre_jardin</td>
+                <td>@item.nombre_usuario</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" href="/Ninos/Edit?id=@item.pkIdNino">Editar</a>
+                    <a class="btn btn-danger btn-sm" href="/Ninos/Delete?id=@item.pkIdNino">Borrar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data.SqlClient;
-using static ICBFApp.Pages.Roles.IndexModel;
 using static ICBFApp.Pages.TipoDoc.IndexModel;
 
 namespace ICBFApp.Pages.TipoDoc
