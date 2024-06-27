@@ -1,0 +1,84 @@
+USE ICBF;
+
+CREATE TABLE jardines (
+    pkIdJardin int primary key IDENTITY,
+    nombre varchar(85) not null,
+    direccion varchar(260) not null,
+    estado VARCHAR(260) NOT NULL CHECK (estado IN ('Aprobado', 'En trámite', 'Negado'))
+);
+
+CREATE TABLE eps (
+    pkIdEps int primary key IDENTITY,
+    nit int not null,
+    nombre varchar(120) not null,
+    centro_medico varchar(120) not null,
+    direccion varchar(120) not null,
+    telefono int not null
+);
+
+CREATE TABLE roles (
+    pkIdRol int primary key IDENTITY,
+    tipo VARCHAR(50) NOT NULL CHECK (tipo IN ('Administrador', 'Madre Comunitaria', 'Acudiente'))
+);
+
+
+CREATE TABLE tipoDoc (
+    pkIdTipoDoc int primary key IDENTITY,
+    tipo VARCHAR(50) NOT NULL CHECK (tipo IN ('CC', 'CE', 'TI', 'NIUP'))
+);
+
+
+CREATE TABLE usuarios (
+    pkIdUsuario int primary key IDENTITY,
+    identificacion varchar(85) not null,
+    nombre varchar(85) not null,
+    fechaNacimiento date not null,
+    telefono varchar(85) not null,
+    correo varchar(85) not null,
+    direccion varchar(260) not null,
+    fkIdRol int not null,
+    fkIdTipoDoc int not null,
+    foreign key(fkIdRol) references roles(pkIdRol),
+    foreign key(fkIdTipoDoc) references tipoDoc(pkIdTipoDoc)
+);
+
+
+CREATE TABLE ninos (
+    pkIdNino INT PRIMARY KEY IDENTITY,
+    niup int not null,
+    nombre varchar(85) not null,
+    fechaNacimiento date not null,
+    tipoSangre VARCHAR(2) NOT NULL CHECK (tipoSangre IN ('A', 'O', 'B', 'AB')),
+    ciudadNacimiento VARCHAR(85) NOT NULL,
+    fkIdEps int not null,
+    fkIdJardin int not null,
+    fkIdUsuario int not null,
+    foreign key(fkIdEps) references eps(pkIdEps),
+    foreign key(fkIdJardin) references jardines(pkIdJardin),
+    foreign key(fkIdUsuario) references usuarios(pkIdUsuario)
+);
+
+CREATE TABLE asistencias (
+    pkIdAsistencia int primary key IDENTITY,
+    fecha date not null,
+    descripcionEstado VARCHAR(2) NOT NULL CHECK (descripcionEstado IN ('Enfermo', 'Sano', 'Decaido')),
+    fkIdNino int not null,
+    foreign key(fkIdNino) references ninos(pkIdNino)
+);
+
+CREATE TABLE avances_academicos (
+    pkIdAvance int primary key IDENTITY,
+    fechaNota date not null,
+    descripcion varchar(240) not null,
+    anoEscolar varchar(45) not null,
+    nivel VARCHAR(2) NOT NULL CHECK (nivel IN ('Natal', 'Prenatal', 'Párvulo', 'Jardin', 'Pre-Jardin')),
+    notas VARCHAR(2) NOT NULL CHECK (notas IN ('Superior', 'Alto', 'Bajo')),
+    fkIdNino int not null,
+    foreign key(fkIdNino) references ninos(pkIdNino)
+);
+
+
+
+
+
+
