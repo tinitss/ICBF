@@ -14,6 +14,9 @@ namespace ICBFApp.Pages.Ninos
         // Lista para almacenar la información de los niños
         public List<NinoInfo> listNinos = new List<NinoInfo>();
 
+        // Propiedad para almacenar mensajes de error
+        public string errorMessage { get; set; }
+
         // Método GET para cargar la lista de niños
         public void OnGet()
         {
@@ -23,12 +26,12 @@ namespace ICBFApp.Pages.Ninos
                 {
                     connection.Open();
                     string sqlSelect = @"SELECT n.pkIdNino, n.niup, n.nombre, n.fechaNacimiento, n.tipoSangre, 
-                                        n.ciudadNacimiento, e.nombre AS nombre_eps, j.nombre AS nombre_jardin, 
-                                        u.nombre AS nombre_usuario
-                                        FROM ninos n
-                                        INNER JOIN eps e ON n.fkIdEps = e.pkIdEps
-                                        INNER JOIN jardines j ON n.fkIdJardin = j.pkIdJardin
-                                        INNER JOIN usuarios u ON n.fkIdUsuario = u.pkIdUsuario";
+                                n.ciudadNacimiento, e.nombre AS nombre_eps, j.nombre AS nombre_jardin, 
+                                u.nombre AS nombre_usuario
+                                FROM ninos n
+                                INNER JOIN eps e ON n.fkIdEps = e.pkIdEps
+                                INNER JOIN jardines j ON n.fkIdJardin = j.pkIdJardin
+                                INNER JOIN usuarios u ON n.fkIdUsuario = u.pkIdUsuario";
 
                     using (SqlCommand command = new SqlCommand(sqlSelect, connection))
                     {
@@ -57,7 +60,8 @@ namespace ICBFApp.Pages.Ninos
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception: " + ex.ToString());
+                errorMessage = "Error al cargar la lista de niños: " + ex.Message;
+                // Puedes agregar más detalles de error si es necesario para depuración
             }
         }
 

@@ -37,6 +37,7 @@ namespace ICBFApp.Pages.EPS
                 {
                     connection.Open();
 
+
                     string sqlExists = "SELECT COUNT(*) FROM EPS WHERE nombre = @nombre";
                     using (SqlCommand commandCheck = new SqlCommand(sqlExists, connection))
                     {

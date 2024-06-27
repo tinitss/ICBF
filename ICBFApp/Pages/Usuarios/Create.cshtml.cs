@@ -3,129 +3,176 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace ICBFApp.Pages.Usuarios
 {
     public class CreateModel : PageModel
     {
-        // CONEXIÓN A LA BASE DE DATOS
+        // CONEXIÓN BD
         string connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
 
-        // Propiedades para almacenar opciones de selección
-        public List<Rol> Roles { get; set; }
-        public List<TipoDocumento> TiposDocumento { get; set; }
+        // Propiedades para la página
+        public UsuarioInfo usuarioInfo { get; set; } = new UsuarioInfo();
+        public List<RolInfo> rolesInfo { get; set; } = new List<RolInfo>();
+        public List<TipoDocInfo> tiposDocInfo { get; set; } = new List<TipoDocInfo>();
+        public string errorMessage = "";
+        public string successMessage = "";
 
-        // Método GET para cargar opciones de selección y preparar la página
+        // Método GET
         public void OnGet()
         {
-            CargarRoles();
-            CargarTiposDocumento();
-        }
-
-        // Método POST para manejar el envío del formulario de creación
-        public async Task<IActionResult> OnPostAsync(string identificacion, string nombre, DateTime fechaNacimiento, string telefono, string correo, string direccion, int fkIdRol, int fkIdTipoDoc)
-        {
+            // Cargar información necesaria para la página de creación
             try
             {
+                // Consulta para obtener información de roles
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    await connection.OpenAsync();
-
-                    string sqlInsert = @"INSERT INTO usuarios (identificacion, nombre, fechaNacimiento, telefono, correo, direccion, fkIdRol, fkIdTipoDoc)
-                                         VALUES (@Identificacion, @Nombre, @FechaNacimiento, @Telefono, @Correo, @Direccion, @FkIdRol, @FkIdTipoDoc)";
-
-                    using (SqlCommand command = new SqlCommand(sqlInsert, connection))
+                    connection.Open();
+                    string sql = "SELECT pkIdRol, tipo FROM roles";
+                    using (SqlCommand command = new SqlCommand(sql, connection))
                     {
-                        command.Parameters.AddWithValue("@Identificacion", identificacion);
-                        command.Parameters.AddWithValue("@Nombre", nombre);
-                        command.Parameters.AddWithValue("@FechaNacimiento", fechaNacimiento);
-                        command.Parameters.AddWithValue("@Telefono", telefono);
-                        command.Parameters.AddWithValue("@Correo", correo);
-                        command.Parameters.AddWithValue("@Direccion", direccion);
-                        command.Parameters.AddWithValue("@FkIdRol", fkIdRol);
-                        command.Parameters.AddWithValue("@FkIdTipoDoc", fkIdTipoDoc);
-
-                        await command.ExecuteNonQueryAsync();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                rolesInfo.Add(new RolInfo
+                                {
+                                    pkIdRol = reader.GetInt32(0).ToString(),
+                                    tipo = reader.GetString(1)
+                                });
+                            }
+                        }
                     }
                 }
 
-                return RedirectToPage("./Index");
+                // Consulta para obtener información de tipos de documento
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string sql = "SELECT pkIdTipoDoc, tipo FROM tipoDoc";
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                tiposDocInfo.Add(new TipoDocInfo
+                                {
+                                    pkIdTipoDoc = reader.GetInt32(0).ToString(),
+                                    tipo = reader.GetString(1)
+                                });
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception: " + ex.ToString());
-                return Page();
+                errorMessage = ex.Message;
             }
         }
 
-        // Método para cargar roles desde la base de datos
-        private void CargarRoles()
+        // Método POST
+        public IActionResult OnPost()
         {
-            Roles = new List<Rol>();
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                connection.Open();
+                usuarioInfo.identificacion = Request.Form["usuarioInfo.identificacion"];
+                usuarioInfo.nombre = Request.Form["usuarioInfo.nombre"];
+                usuarioInfo.fechaNacimiento = Convert.ToDateTime(Request.Form["usuarioInfo.fechaNacimiento"]);
+                usuarioInfo.telefono = Request.Form["usuarioInfo.telefono"];
+                usuarioInfo.correo = Request.Form["usuarioInfo.correo"];
+                usuarioInfo.direccion = Request.Form["usuarioInfo.direccion"];
+                usuarioInfo.fkIdRol = Convert.ToInt32(Request.Form["usuarioInfo.fkIdRol"]);
+                usuarioInfo.fkIdTipoDoc = Convert.ToInt32(Request.Form["usuarioInfo.fkIdTipoDoc"]);
 
-                string sqlSelectRoles = "SELECT pkIdRol, tipo FROM roles";
-
-                using (SqlCommand command = new SqlCommand(sqlSelectRoles, connection))
+                // Validar que todos los campos están completos
+                if (string.IsNullOrEmpty(usuarioInfo.identificacion) ||
+                    string.IsNullOrEmpty(usuarioInfo.nombre) ||
+                    string.IsNullOrEmpty(usuarioInfo.telefono) ||
+                    string.IsNullOrEmpty(usuarioInfo.correo) ||
+                    string.IsNullOrEmpty(usuarioInfo.direccion) ||
+                    usuarioInfo.fechaNacimiento == DateTime.MinValue ||
+                    usuarioInfo.fkIdRol == 0 ||
+                    usuarioInfo.fkIdTipoDoc == 0)
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    errorMessage = "Todos los campos son obligatorios.";
+                    return Page();
+                }
+
+                // Insertar en la base de datos
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    String sqlExists = "SELECT COUNT(*) FROM usuarios WHERE identificacion = @identificacion";
+                    using (SqlCommand commandCheck = new SqlCommand(sqlExists, connection))
                     {
-                        while (reader.Read())
+                        commandCheck.Parameters.AddWithValue("@identificacion", usuarioInfo.identificacion);
+
+                        int count = (int)commandCheck.ExecuteScalar();
+
+                        if (count > 0)
                         {
-                            Roles.Add(new Rol
-                            {
-                                pkIdRol = reader.GetInt32(0),
-                                tipo = reader.GetString(1)
-                            });
+                            errorMessage = "El Usuario '" + usuarioInfo.identificacion + "' ya existe. Verifique la información e intente de nuevo.";
+                            return Page();
                         }
                     }
-                }
-            }
-        }
 
-        // Método para cargar tipos de documento desde la base de datos
-        private void CargarTiposDocumento()
-        {
-            TiposDocumento = new List<TipoDocumento>();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-
-                string sqlSelectTipos = "SELECT pkIdTipoDoc, tipo FROM tipoDoc";
-
-                using (SqlCommand command = new SqlCommand(sqlSelectTipos, connection))
-                {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    string sqlInsert = @"
+                        INSERT INTO usuarios (identificacion, nombre, fechaNacimiento, telefono, correo, direccion, fkIdRol, fkIdTipoDoc)
+                        VALUES (@identificacion, @nombre, @fechaNacimiento, @telefono, @correo, @direccion, @fkIdRol, @fkIdTipoDoc)";
+                    using (SqlCommand command = new SqlCommand(sqlInsert, connection))
                     {
-                        while (reader.Read())
-                        {
-                            TiposDocumento.Add(new TipoDocumento
-                            {
-                                pkIdTipoDoc = reader.GetInt32(0),
-                                tipo = reader.GetString(1)
-                            });
-                        }
+                        command.Parameters.AddWithValue("@identificacion", usuarioInfo.identificacion);
+                        command.Parameters.AddWithValue("@nombre", usuarioInfo.nombre);
+                        command.Parameters.AddWithValue("@fechaNacimiento", usuarioInfo.fechaNacimiento);
+                        command.Parameters.AddWithValue("@telefono", usuarioInfo.telefono);
+                        command.Parameters.AddWithValue("@correo", usuarioInfo.correo);
+                        command.Parameters.AddWithValue("@direccion", usuarioInfo.direccion);
+                        command.Parameters.AddWithValue("@fkIdRol", usuarioInfo.fkIdRol);
+                        command.Parameters.AddWithValue("@fkIdTipoDoc", usuarioInfo.fkIdTipoDoc);
+
+                        command.ExecuteNonQuery();
                     }
                 }
+
+                // Redirigir a la página de lista de usuarios o a donde sea necesario
+                return RedirectToPage("/Usuarios/Index");
+            }
+            catch (Exception ex)
+            {
+                errorMessage = "Error al crear el usuario: " + ex.Message;
+                return Page(); // Retorna la página con el mensaje de error
             }
         }
 
-        // Clase para representar un rol
-        public class Rol
+        // Clase para representar la información de cada usuario
+        public class UsuarioInfo
         {
-            public int pkIdRol { get; set; }
+            public string pkIdUsuario { get; set; }
+            public string identificacion { get; set; }
+            public string nombre { get; set; }
+            public DateTime fechaNacimiento { get; set; } = DateTime.Today;
+            public string telefono { get; set; }
+            public string correo { get; set; }
+            public string direccion { get; set; }
+            public int fkIdRol { get; set; }
+            public int fkIdTipoDoc { get; set; }
+        }
+
+        // Clase para representar la información de roles
+        public class RolInfo
+        {
+            public string pkIdRol { get; set; }
             public string tipo { get; set; }
         }
 
-        // Clase para representar un tipo de documento
-        public class TipoDocumento
+        // Clase para representar la información de tipos de documento
+        public class TipoDocInfo
         {
-            public int pkIdTipoDoc { get; set; }
+            public string pkIdTipoDoc { get; set; }
             public string tipo { get; set; }
         }
     }

@@ -8,17 +8,23 @@ namespace ICBFApp.Pages.Ninos
 {
     public class EditModel : PageModel
     {
+        // Conexión a la base de datos
         string connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
 
+        // Propiedad para vincular los datos del niño
         [BindProperty]
         public NinoInfo ninoInfo { get; set; }
 
+        // Listas para almacenar información de EPS, Jardines y Usuarios
         public List<EpsInfo> epsInfo { get; set; } = new List<EpsInfo>();
         public List<JardinInfo> jardinInfo { get; set; } = new List<JardinInfo>();
         public List<UsuarioInfo> usuarioInfo { get; set; } = new List<UsuarioInfo>();
+
+        // Mensajes de éxito y error
         public string errorMessage { get; set; } = "";
         public string successMessage { get; set; } = "";
 
+        // Método OnGet para cargar datos del niño según su ID
         public IActionResult OnGet(int id)
         {
             try
@@ -131,7 +137,7 @@ namespace ICBFApp.Pages.Ninos
                     }
                 }
 
-                return Page();
+                return Page(); // Retorna la página de edición de niño
             }
             catch (Exception ex)
             {
@@ -140,6 +146,7 @@ namespace ICBFApp.Pages.Ninos
             }
         }
 
+        // Método OnPost para actualizar los datos del niño
         public IActionResult OnPost()
         {
             try
@@ -161,6 +168,20 @@ namespace ICBFApp.Pages.Ninos
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
+                    string sqlExists = "SELECT COUNT(*) FROM ninos WHERE niup = @niup";
+                    using (SqlCommand commandCheck = new SqlCommand(sqlExists, connection))
+                    {
+                        commandCheck.Parameters.AddWithValue("@niup", niup);
+
+                        int count = (int)commandCheck.ExecuteScalar();
+
+                        if (count > 0)
+                        {
+                            errorMessage = "El NIUP '" + niup + "' ya está asignado a otro niño. Verifique la información e intente de nuevo.";
+                            return Page(); // Retorna la página con el mensaje de error
+                        }
+                    }
+
                     string sqlUpdate = @"
                         UPDATE ninos
                         SET niup = @niup, nombre = @nombre, fechaNacimiento = @fechaNacimiento,
@@ -194,24 +215,28 @@ namespace ICBFApp.Pages.Ninos
             }
         }
 
+        // Clase para almacenar información de EPS
         public class EpsInfo
         {
             public string pkIdEps { get; set; }
             public string nombre { get; set; }
         }
 
+        // Clase para almacenar información de Jardines
         public class JardinInfo
         {
             public string pkIdJardin { get; set; }
             public string nombre { get; set; }
         }
 
+        // Clase para almacenar información de Usuarios
         public class UsuarioInfo
         {
             public string pkIdUsuario { get; set; }
             public string nombre { get; set; }
         }
 
+        // Clase para almacenar información del niño
         public class NinoInfo
         {
             public string pkIdNino { get; set; }
@@ -230,4 +255,3 @@ namespace ICBFApp.Pages.Ninos
         }
     }
 }
-

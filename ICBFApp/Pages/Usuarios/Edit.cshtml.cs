@@ -134,6 +134,19 @@ namespace ICBFApp.Pages.Usuarios
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
+                    String sqlExists = "SELECT COUNT(*) FROM usuarios WHERE identificacion = @identificacion";
+                    using (SqlCommand commandCheck = new SqlCommand(sqlExists, connection))
+                    {
+                        commandCheck.Parameters.AddWithValue("@identificacion", usuarioInfo.identificacion);
+
+                        int count = (int)commandCheck.ExecuteScalar();
+
+                        if (count > 0)
+                        {
+                            errorMessage = "El Usuario '" + usuarioInfo.identificacion + "' ya existe. Verifique la información e intente de nuevo.";
+                            return Page();
+                        }
+                    }
                     string sqlUpdate = @"
                         UPDATE usuarios
                         SET identificacion = @identificacion, nombre = @nombre, fechaNacimiento = @fechaNacimiento,

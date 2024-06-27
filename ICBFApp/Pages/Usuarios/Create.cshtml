@@ -4,50 +4,77 @@
     ViewData["Title"] = "Crear Usuario";
 }
 
-<h1>Crear Usuario</h1>
+<h2>Crear Usuario</h2>
+
+@if (Model.errorMessage.Length > 0)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>@Model.errorMessage</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+    </div>
+}
 
 <form method="post">
     <div class="form-group">
-        <label for="identificacion">Identificación:</label>
-        <input type="text" class="form-control" id="identificacion" name="identificacion">
+        <label>Identificación</label>
+        <input type="text" class="form-control" asp-for="usuarioInfo.identificacion">
     </div>
     <div class="form-group">
-        <label for="nombre">Nombre:</label>
-        <input type="text" class="form-control" id="nombre" name="nombre">
+        <label>Nombre</label>
+        <input type="text" class="form-control" asp-for="usuarioInfo.nombre">
     </div>
     <div class="form-group">
-        <label for="fechaNacimiento">Fecha de Nacimiento:</label>
-        <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento">
+        <label>Fecha de Nacimiento</label>
+        <input type="date" class="form-control" asp-for="usuarioInfo.fechaNacimiento">
     </div>
     <div class="form-group">
-        <label for="telefono">Teléfono:</label>
-        <input type="text" class="form-control" id="telefono" name="telefono">
+        <label>Teléfono</label>
+        <input type="text" class="form-control" asp-for="usuarioInfo.telefono">
     </div>
     <div class="form-group">
-        <label for="correo">Correo:</label>
-        <input type="email" class="form-control" id="correo" name="correo">
+        <label>Correo Electrónico</label>
+        <input type="email" class="form-control" asp-for="usuarioInfo.correo">
     </div>
     <div class="form-group">
-        <label for="direccion">Dirección:</label>
-        <input type="text" class="form-control" id="direccion" name="direccion">
+        <label>Dirección</label>
+        <input type="text" class="form-control" asp-for="usuarioInfo.direccion">
     </div>
     <div class="form-group">
-        <label for="fkIdRol">Rol:</label>
-        <select class="form-control" id="fkIdRol" name="fkIdRol">
-            @foreach (var rol in Model.Roles)
+        <label>Rol</label>
+        <select class="form-control" asp-for="usuarioInfo.fkIdRol">
+            @foreach (var rol in Model.rolesInfo)
             {
                 <option value="@rol.pkIdRol">@rol.tipo</option>
             }
         </select>
     </div>
     <div class="form-group">
-        <label for="fkIdTipoDoc">Tipo de Documento:</label>
-        <select class="form-control" id="fkIdTipoDoc" name="fkIdTipoDoc">
-            @foreach (var tipoDoc in Model.TiposDocumento)
+        <label>Tipo de Documento</label>
+        <select class="form-control" asp-for="usuarioInfo.fkIdTipoDoc">
+            @foreach (var tipoDoc in Model.tiposDocInfo)
             {
                 <option value="@tipoDoc.pkIdTipoDoc">@tipoDoc.tipo</option>
             }
         </select>
     </div>
-    <button type="submit" class="btn btn-primary">Crear Usuario</button>
+    @if (Model.successMessage.Length > 0)
+    {
+        <div class="row mb-3">
+            <div class="col-sm-9">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>@Model.successMessage</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row mb-3">
+        <div class="offset-sm-3 col-sm-3 d-grid">
+            <button type="submit" class="btn btn-primary">Agregar</button>
+        </div>
+        <div class="col-sm-3 d-grid">
+            <a class="btn btn-outline-primary" href="/Usarios/Index" role="button">Cancelar</a>
+        </div>
+    </div>
 </form>

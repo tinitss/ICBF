@@ -21,6 +21,21 @@ namespace ICBFApp.Pages.EPS
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
+
+                    //VALIDAR QUE LA EPS NO EXISTA
+                    string sqlExists = "SELECT COUNT(*) FROM EPS WHERE nombre = @nombre";
+                    using (SqlCommand commandCheck = new SqlCommand(sqlExists, connection))
+                    {
+                        commandCheck.Parameters.AddWithValue("@nombre", epsInfo.nombre);
+                        int count = (int)commandCheck.ExecuteScalar();
+
+                        if (count > 0)
+                        {
+                            errorMessage = $"La EPS '{epsInfo.nombre}' ya existe. Verifique la información e intente de nuevo.";
+                            return;
+                        }
+                    }
+
                     String sql = "SELECT * FROM eps WHERE pkIdEps = @id";
                     using (SqlCommand command = new SqlCommand(sql, connection))
                     {

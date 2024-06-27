@@ -70,7 +70,7 @@ namespace ICBFApp.Pages.TipoDoc
                     connection.Open();
 
 
-                    //VERIFICA QUE EL ADMINISTRADOR NO EXISTA
+                    //VERIFICA QUE EL TIPODOC NO EXISTA
                     String sqlExists = "SELECT COUNT(*) FROM tipoDoc WHERE tipo = @tipo";
                     using (SqlCommand commandCheck = new SqlCommand(sqlExists, connection))
                     {

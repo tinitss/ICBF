@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Globalization;
+using System.IO;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
 
 namespace ICBFApp.Pages.Ninos
 {
@@ -94,12 +97,11 @@ namespace ICBFApp.Pages.Ninos
             }
         }
 
-        // Método POST
+        // Método POST para crear un nuevo niño
         public IActionResult OnPost()
         {
             try
             {
-
                 // Obtener datos del formulario
                 string niupString = Request.Form["ninoInfo.niup"];
                 string nombre = Request.Form["ninoInfo.nombre"];
@@ -109,17 +111,17 @@ namespace ICBFApp.Pages.Ninos
                 string jardinIdString = Request.Form["ninoInfo.fkIdJardin"];
                 string usuarioIdString = Request.Form["ninoInfo.fkIdUsuario"];
 
-                // Validaciones de datos
+                // Validar y convertir datos
                 int niup, epsId, jardinId, usuarioId;
-                DateTime fechaNacimiento;
                 if (!int.TryParse(niupString, out niup) ||
                     !int.TryParse(epsIdString, out epsId) ||
                     !int.TryParse(jardinIdString, out jardinId) ||
                     !int.TryParse(usuarioIdString, out usuarioId))
                 {
-                    errorMessage = "Error en la conversión de datos.";
+                    errorMessage = "Todos los campos son obligatorios.";
                     return Page(); // Retorna la página con el mensaje de error
                 }
+
                 // Verificar si el NIUP ya existe
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
@@ -133,18 +135,15 @@ namespace ICBFApp.Pages.Ninos
 
                         if (count > 0)
                         {
-                            errorMessage = "El NIUP '" + niup + "' ya está asignado a otro niño. Verifique la información e intente de nuevo.";
+                            errorMessage = $"El NIUP '{niup}' ya está asignado a otro niño. Verifique la información e intente de nuevo.";
                             return Page(); // Retorna la página con el mensaje de error
                         }
                     }
-                }
-                // Insertar en la base de datos
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
+
+                    // Insertar nuevo niño
                     string sqlInsert = @"
-                    INSERT INTO ninos (niup, nombre, fechaNacimiento, tipoSangre, ciudadNacimiento, fkIdEps, fkIdJardin, fkIdUsuario)
-                    VALUES (@niup, @nombre, @fechaNacimiento, @tipoSangre, @ciudadNacimiento, @epsId, @jardinId, @usuarioId)";
+                        INSERT INTO ninos (niup, nombre, fechaNacimiento, tipoSangre, ciudadNacimiento, fkIdEps, fkIdJardin, fkIdUsuario)
+                        VALUES (@niup, @nombre, @fechaNacimiento, @tipoSangre, @ciudadNacimiento, @epsId, @jardinId, @usuarioId)";
                     using (SqlCommand command = new SqlCommand(sqlInsert, connection))
                     {
                         command.Parameters.AddWithValue("@niup", niup);
@@ -165,31 +164,118 @@ namespace ICBFApp.Pages.Ninos
             }
             catch (Exception ex)
             {
-                errorMessage = "Error al crear el niño: " + ex.Message;
+                errorMessage = $"Error al crear el niño: {ex.Message}";
                 return Page(); // Retorna la página con el mensaje de error
             }
         }
 
-        
+        // Método para generar el reporte en PDF
+        public IActionResult OnPostGenerarReportePDF()
+        {
+            try
+            {
+                List<NinoInfo> ninos = new List<NinoInfo>();
 
-    // Clase para representar la información de cada niño
-    public class EpsInfo
-    {
-        public string pkIdEps { get; set; }
-        public string nombre { get; set; }
-    }
+                // Consulta para obtener la información de los niños desde la base de datos
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string sql = @"
+                        SELECT n.pkIdNino, n.niup, n.nombre, n.fechaNacimiento, n.tipoSangre, n.ciudadNacimiento, 
+                               e.nombre AS nombre_eps, j.nombre AS nombre_jardin, u.nombre AS nombre_usuario
+                        FROM ninos n
+                        INNER JOIN eps e ON n.fkIdEps = e.pkIdEps
+                        INNER JOIN jardines j ON n.fkIdJardin = j.pkIdJardin
+                        INNER JOIN usuarios u ON n.fkIdUsuario = u.pkIdUsuario";
 
-    public class JardinInfo
-    {
-        public string pkIdJardin { get; set; }
-        public string nombre { get; set; }
-    }
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                ninos.Add(new NinoInfo
+                                {
+                                    pkIdNino = reader.GetInt32(0).ToString(),
+                                    niup = reader.GetInt32(1).ToString(),
+                                    nombre = reader.GetString(2),
+                                    fechaNacimiento = reader.GetDateTime(3),
+                                    tipoSangre = reader.GetString(4),
+                                    ciudadNacimiento = reader.GetString(5),
+                                    fkIdEps = reader.GetInt32(6).ToString(),
+                                    fkIdJardin = reader.GetInt32(7).ToString(),
+                                    fkIdUsuario = reader.GetInt32(8).ToString()
+                                });
+                            }
+                        }
+                    }
+                }
 
-    public class UsuarioInfo
-    {
-        public string pkIdUsuario { get; set; }
-        public string nombre { get; set; }
-    }
+                // Generación del PDF
+                string fileName = "Reporte_Ninos.pdf";
+                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "reports", fileName);
+
+                using (var writer = new PdfWriter(filePath))
+                {
+                    using (var pdf = new PdfDocument(writer))
+                    {
+                        var document = new Document(pdf);
+                        document.Add(new Paragraph("Reporte de Niños"));
+
+                        // Agregar la información de los niños al PDF
+                        foreach (var nino in ninos)
+                        {
+                            document.Add(new Paragraph($"NIUP: {nino.niup}"));
+                            document.Add(new Paragraph($"Nombre: {nino.nombre}"));
+                            document.Add(new Paragraph($"Fecha de Nacimiento: {nino.fechaNacimiento.ToShortDateString()}"));
+                            document.Add(new Paragraph($"Tipo de Sangre: {nino.tipoSangre}"));
+                            document.Add(new Paragraph($"Ciudad de Nacimiento: {nino.ciudadNacimiento}"));
+                            document.Add(new Paragraph($"EPS: {nino.fkIdEps}"));
+                            document.Add(new Paragraph($"Jardín: {nino.fkIdJardin}"));
+                            document.Add(new Paragraph($"Usuario: {nino.fkIdUsuario}"));
+                            document.Add(new AreaBreak());
+                        }
+
+                        document.Close();
+                    }
+
+
+                    // Descargar el archivo generado
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+                    string contentType = "application/pdf";
+                    string fileNameDownload = "Reporte_Ninos.pdf";
+
+                    return File(fileBytes, contentType, fileNameDownload);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejo de excepciones y retorno de la página con mensaje de error
+                errorMessage = $"Error al generar el reporte: {ex.Message}";
+                return Page();
+            }
+        }
+
+        // Clase para representar la información de cada EPS
+        public class EpsInfo
+        {
+            public string pkIdEps { get; set; }
+            public string nombre { get; set; }
+        }
+
+        // Clase para representar la información de cada Jardín
+        public class JardinInfo
+        {
+            public string pkIdJardin { get; set; }
+            public string nombre { get; set; }
+        }
+
+        // Clase para representar la información de cada Usuario
+        public class UsuarioInfo
+        {
+            public string pkIdUsuario { get; set; }
+            public string nombre { get; set; }
+        }
 
         // Clase para representar la información de cada niño
         public class NinoInfo
@@ -204,7 +290,5 @@ namespace ICBFApp.Pages.Ninos
             public string fkIdJardin { get; set; }
             public string fkIdUsuario { get; set; }
         }
-    
-}
     }
-
+}
