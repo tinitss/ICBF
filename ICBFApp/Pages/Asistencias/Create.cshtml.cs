@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ICBFApp.Pages.Asistencias
 {
@@ -92,6 +94,64 @@ namespace ICBFApp.Pages.Asistencias
                 errorMessage = "Error al registrar la asistencia: " + ex.Message;
                 return Page();
             }
+        }
+
+        // Método de acción para generar reporte
+        public async Task<IActionResult> OnGetGenerateReportAsync()
+        {
+            try
+            {
+                // Obtener datos para el reporte (ejemplo básico)
+                List<AsistenciaInfo> asistencias = await GetAsistenciasAsync();
+
+                // Generar contenido del reporte CSV
+                StringBuilder csvContent = new StringBuilder();
+                csvContent.AppendLine("Fecha,Descripción de Estado,NIUP");
+
+                foreach (var asistencia in asistencias)
+                {
+                    csvContent.AppendLine($"{asistencia.fecha.ToShortDateString()},{asistencia.descripcionEstado},{asistencia.fkIdNino}");
+                }
+
+                // Preparar la respuesta como un archivo CSV
+                byte[] buffer = Encoding.UTF8.GetBytes(csvContent.ToString());
+                return File(buffer, "text/csv", "reporte_asistencias.csv");
+            }
+            catch (Exception ex)
+            {
+                errorMessage = "Error al generar el reporte: " + ex.Message;
+                return Page();
+            }
+        }
+
+        // Método auxiliar para obtener las asistencias desde la base de datos (ejemplo básico)
+        private async Task<List<AsistenciaInfo>> GetAsistenciasAsync()
+        {
+            List<AsistenciaInfo> asistencias = new List<AsistenciaInfo>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+                string sqlSelectAsistencias = "SELECT fecha, descripcionEstado, fkIdNino FROM asistencias";
+
+                using (SqlCommand command = new SqlCommand(sqlSelectAsistencias, connection))
+                {
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            asistencias.Add(new AsistenciaInfo
+                            {
+                                fecha = reader.GetDateTime(0),
+                                descripcionEstado = reader.GetString(1),
+                                fkIdNino = reader.GetInt32(2).ToString()
+                            });
+                        }
+                    }
+                }
+            }
+
+            return asistencias;
         }
 
         // Clase para representar la información de cada niño
