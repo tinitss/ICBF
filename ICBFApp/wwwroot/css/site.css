@@ -16,3 +16,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.custom-dropdown-menu {
+    background-color: green;
+}
+
+    .custom-dropdown-menu a {
+        color: white;
+    }
+
+        .custom-dropdown-menu a:hover {
+            background-color: darkgreen;
+            color: white;
+        }

@@ -9,7 +9,7 @@ namespace ICBFApp.Pages.Usuarios
     public class CreateModel : PageModel
     {
         // CONEXIÓN BD
-        string connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
+        string connectionString = "Data Source=DESKTOP-VCG45TQ\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
 
         // Propiedades para la página
         public UsuarioInfo usuarioInfo { get; set; } = new UsuarioInfo();

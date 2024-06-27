@@ -10,7 +10,10 @@ namespace ICBFApp.Pages.EPS
         public EpsInfo epsInfo = new EpsInfo();
         public string errorMessage = "";
         public string successMessage = "";
-        private readonly string connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True";
+        private readonly string connectionString = "Data Source=DESKTOP-VCG45TQ\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
+
+
+
 
         public void OnGet()
         {

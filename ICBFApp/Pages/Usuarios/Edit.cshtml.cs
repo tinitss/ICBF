@@ -8,18 +8,20 @@ namespace ICBFApp.Pages.Usuarios
 {
     public class EditModel : PageModel
     {
-        string connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
+        string connectionString = "Data Source=DESKTOP-VCG45TQ\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
 
-        [BindProperty]
-        public UsuarioInfo usuarioInfo { get; set; }
+        public UsuarioInfo usuarioInfo = new UsuarioInfo();
+
 
         public List<RolInfo> rolesInfo { get; set; } = new List<RolInfo>();
         public List<TipoDocumentoInfo> tiposDocumentoInfo { get; set; } = new List<TipoDocumentoInfo>();
         public string errorMessage { get; set; } = "";
         public string successMessage { get; set; } = "";
 
-        public IActionResult OnGet(int id)
+        public IActionResult OnGet()
         {
+            String id = Request.Query["id"];
+
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -141,11 +143,11 @@ namespace ICBFApp.Pages.Usuarios
 
                         int count = (int)commandCheck.ExecuteScalar();
 
-                        if (count > 0)
-                        {
-                            errorMessage = "El Usuario '" + usuarioInfo.identificacion + "' ya existe. Verifique la información e intente de nuevo.";
-                            return Page();
-                        }
+                        //if (count > 0)
+                        //{
+                        //    errorMessage = "El Usuario '" + usuarioInfo.identificacion + "' ya existe. Verifique la información e intente de nuevo.";
+                        //    return Page();
+                        //}
                     }
                     string sqlUpdate = @"
                         UPDATE usuarios

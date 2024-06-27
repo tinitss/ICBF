@@ -1,21 +1,30 @@
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 
 namespace ICBFApp.Pages.Usuarios
 {
     public class IndexModel : PageModel
     {
         // CONEXIÓN A LA BASE DE DATOS
-        string connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
+        string connectionString = "Data Source=DESKTOP-VCG45TQ\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
 
         // Lista para almacenar la información de los usuarios
         public List<UsuarioInfo> listUsuarios = new List<UsuarioInfo>();
 
         // Método GET para cargar la lista de usuarios
         public void OnGet()
+        {
+            LoadUsuarios();
+        }
+
+        // Método para cargar la lista de usuarios desde la base de datos
+        private void LoadUsuarios()
         {
             try
             {
@@ -57,6 +66,52 @@ namespace ICBFApp.Pages.Usuarios
             catch (Exception ex)
             {
                 Console.WriteLine("Exception: " + ex.ToString());
+            }
+        }
+
+        // Método POST para generar el PDF
+        public IActionResult OnPostGeneratePDF()
+        {
+            // Recargar los datos de los usuarios
+            LoadUsuarios();
+            List<UsuarioInfo> usuarios = listUsuarios;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                Document document = new Document(PageSize.A4);
+                PdfWriter writer = PdfWriter.GetInstance(document, ms);
+                document.Open();
+
+                document.Add(new Paragraph("Lista de Usuarios"));
+
+                PdfPTable table = new PdfPTable(8);
+                table.AddCell("Identificación");
+                table.AddCell("Nombre");
+                table.AddCell("Fecha de Nacimiento");
+                table.AddCell("Teléfono");
+                table.AddCell("Correo");
+                table.AddCell("Dirección");
+                table.AddCell("Rol");
+                table.AddCell("Tipo de Documento");
+
+                foreach (var usuario in usuarios)
+                {
+                    table.AddCell(usuario.identificacion);
+                    table.AddCell(usuario.nombre);
+                    table.AddCell(usuario.fechaNacimiento.ToShortDateString());
+                    table.AddCell(usuario.telefono);
+                    table.AddCell(usuario.correo);
+                    table.AddCell(usuario.direccion);
+                    table.AddCell(usuario.nombre_rol);
+                    table.AddCell(usuario.nombre_tipo_doc);
+                }
+
+                document.Add(table);
+
+                document.Close();
+                writer.Close();
+
+                return File(ms.ToArray(), "application/pdf", "UsuariosReporte.pdf");
             }
         }
 

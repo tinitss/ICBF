@@ -8,7 +8,7 @@ namespace ICBFApp.Pages.EPS
     public class IndexModel : PageModel
     {
         // Cadena de conexión a la base de datos
-        string connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
+        string connectionString = "Data Source=DESKTOP-VCG45TQ\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
 
         // Lista para almacenar la información de EPS
         public List<EpsInfo> listEps = new List<EpsInfo>();

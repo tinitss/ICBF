@@ -7,6 +7,9 @@
 <br />
 <h2>Lista de Usuarios</h2>
 <a class="btn btn-primary btn-sm" href="/Usuarios/Create">Nuevo Usuario</a>
+<form method="post" asp-page-handler="GeneratePDF">
+    <button type="submit" class="btn btn-secondary btn-sm">Generar PDF</button>
+</form>
 
 <table class="table">
     <thead>

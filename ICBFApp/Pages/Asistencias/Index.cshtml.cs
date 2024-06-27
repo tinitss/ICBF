@@ -9,7 +9,7 @@ namespace ICBFApp.Pages.Asistencias
     public class IndexModel : PageModel
     {
         // CONEXIÓN A LA BASE DE DATOS
-        string connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
+        string connectionString = "Data Source=DESKTOP-VCG45TQ\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
 
         // Lista para almacenar la información de asistencias
         public List<AsistenciaInfo> listAsistencias { get; set; } = new List<AsistenciaInfo>();

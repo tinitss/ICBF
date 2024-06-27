@@ -9,7 +9,7 @@ namespace ICBFApp.Pages.AvancesAcademicos
     public class EditModel : PageModel
     {
         // CONEXIÓN A LA BASE DE DATOS
-        string connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
+        string connectionString = "Data Source=DESKTOP-VCG45TQ\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
 
         // Propiedad para el modelo de avance académico
         [BindProperty]

@@ -9,7 +9,7 @@ namespace ICBFApp.Pages.Ninos
     public class EditModel : PageModel
     {
         // Conexión a la base de datos
-        string connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
+        string connectionString = "Data Source=DESKTOP-VCG45TQ\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
 
         // Propiedad para vincular los datos del niño
         [BindProperty]

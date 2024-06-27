@@ -4,45 +4,64 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
+    <link rel="icon" href="~/ICBF.jpg" type="image/x-icon" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ICBFApp.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:green;">
             <div class="container">
-       
-                <a class="navbar-brand" asp-area="" asp-page="/Index">ICBF</a>
+                <a class="navbar-brand text-light" asp-area="" asp-page="/Index" style="font-weight:700;">ICBF</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Usuarios/Index">Usuarios</a>
+                        <!-- Gestión de Usuarios -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdownUsuarios" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Gestión de Usuarios
+                            </a>
+                            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="navbarDropdownUsuarios">
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Usuarios/Index">Usuarios</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Roles/Index">Roles</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/EPS/Index">EPS</a>
+
+                        <!-- Salud -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdownSalud" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Salud
+                            </a>
+                            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="navbarDropdownSalud">
+                                <li><a class="dropdown-item" asp-area="" asp-page="/EPS/Index">EPS</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Roles/Index">Roles</a>
+
+                        <!-- Educación -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdownEducacion" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Educación
+                            </a>
+                            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="navbarDropdownEducacion">
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Jardin/Index">Jardín</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Ninos/Index">Niños</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-page="/AvancesAcademicos/Index">Avances Académicos</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Jardin/Index">Jardín</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/TipoDoc/Index">Tipo de Documento</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Ninos/Index">Niños</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/AvancesAcademicos/Index">Avances Académicos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Asistencias/Index">Asistencias</a>
+
+                        <!-- Administración -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdownAdministracion" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Administración
+                            </a>
+                            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="navbarDropdownAdministracion">
+                                <li><a class="dropdown-item" asp-area="" asp-page="/TipoDoc/Index">Tipo de Documento</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Asistencias/Index">Asistencias</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
