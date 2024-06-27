@@ -1,4 +1,39 @@
 ﻿@page
 @model ICBFApp.Pages.AvancesAcademicos.IndexModel
 @{
+    ViewData["Title"] = "Lista de Avances Académicos";
 }
+
+<h2>Lista de Avances Académicos</h2>
+<a class="btn btn-primary btn-sm" href="/AvancesAcademicos/Create">Nuevo Avance</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Fecha de Nota</th>
+            <th>Descripción</th>
+            <th>Año Escolar</th>
+            <th>Nivel</th>
+            <th>Notas</th>
+            <th>NIUP del Niño</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.listAvancesAcademicos)
+        {
+            <tr>
+                <td>@item.fechaNota.ToShortDateString()</td>
+                <td>@item.descripcion</td>
+                <td>@item.anoEscolar</td>
+                <td>@item.nivel</td>
+                <td>@item.notas</td>
+                <td>@item.niupNino</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" href="/AvancesAcademicos/Edit?id=@item.pkIdAvance">Editar</a>
+                    <a class="btn btn-danger btn-sm" href="/AvancesAcademicos/Delete?id=@item.pkIdAvance">Borrar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

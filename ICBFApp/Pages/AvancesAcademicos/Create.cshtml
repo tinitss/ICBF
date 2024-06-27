@@ -1,0 +1,65 @@
+﻿@page
+@model ICBFApp.Pages.AvancesAcademicos.CreateModel
+@{
+    ViewData["Title"] = "Crear Avance Académico";
+}
+
+<h2>Crear Avance Académico</h2>
+
+@if (!string.IsNullOrEmpty(Model.errorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @Model.errorMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.successMessage))
+{
+    <div class="alert alert-success" role="alert">
+        @Model.successMessage
+    </div>
+}
+
+<form method="post">
+    <div class="form-group">
+        <label>Fecha de Nota</label>
+        <input type="date" class="form-control" asp-for="AvanceAcademico.fechaNota">
+    </div>
+    <div class="form-group">
+        <label>Descripción</label>
+        <input type="text" class="form-control" asp-for="AvanceAcademico.descripcion">
+    </div>
+    <div class="form-group">
+        <label>Año Escolar</label>
+        <input type="number" class="form-control" asp-for="AvanceAcademico.anoEscolar" min="2000" max="2100" step="1">
+    </div>
+
+    <div class="form-group">
+        <label>Nivel</label>
+        <select class="form-control" asp-for="AvanceAcademico.nivel">
+            <option value="Natal">Natal</option>
+            <option value="Prenatal">Prenatal</option>
+            <option value="Párvulo">Párvulo</option>
+            <option value="Jardin">Jardin</option>
+            <option value="Pre-Jardin">Pre-Jardin</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Notas</label>
+        <select class="form-control" asp-for="AvanceAcademico.notas">
+            <option value="Superior">Superior</option>
+            <option value="Alto">Alto</option>
+            <option value="Bajo">Bajo</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>NIUP del Niño</label>
+        <select class="form-control" asp-for="AvanceAcademico.fkIdNino">
+            @foreach (var nino in Model.listNinos)
+            {
+                <option value="@nino.pkIdNino">@nino.niup</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Crear Avance Académico</button>
+</form>

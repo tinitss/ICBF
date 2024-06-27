@@ -1,90 +1,63 @@
 ﻿@page
 @model ICBFApp.Pages.Usuarios.EditModel
 @{
+    ViewData["Title"] = "Editar Usuario";
 }
-<br />
+
 <h2>Editar Usuario</h2>
 
-@if (Model.errorMessage.Length > 0)
+@if (!string.IsNullOrEmpty(Model.errorMessage))
 {
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong>@Model.errorMessage</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+    <div class="alert alert-danger" role="alert">
+        @Model.errorMessage
     </div>
 }
 
+<form method="post">
+    <input type="hidden" asp-for="usuarioInfo.pkIdUsuario" />
 
-<form method="POST">
-    <input type="hidden" class="form-control" name="id" value="@Model.usuarioInfo.pkIdUsuario" />
-    <div class="row mb-3">
-        <label class="col-form-label-sm col-form-label">Identificación</label>
-        <div class="col-sm-6">
-            <input type="text" class="form-control" name="identificacion" value="@Model.usuarioInfo.identificacion">
-        </div>
+    <div class="form-group">
+        <label>Identificación</label>
+        <input type="text" class="form-control" asp-for="usuarioInfo.identificacion">
     </div>
-
-    <div class="row mb-3">
-        <label class="col-form-label-sm col-form-label">Nombre</label>
-        <div class="col-sm-6">
-            <input type="text" class="form-control" name="nombre" value="@Model.usuarioInfo.nombre">
-        </div>
+    <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" class="form-control" asp-for="usuarioInfo.nombre">
     </div>
-
-    <div class="row mb-3">
-        <label class="col-form-label-sm col-form-label">Fecha Nacimiento</label>
-        <div class="col-sm-6">
-            <input type="text" class="form-control" name="fechaNacimiento" value="@Model.usuarioInfo.fechaNacimiento">
-        </div>
+    <div class="form-group">
+        <label>Fecha de Nacimiento</label>
+        <input type="date" class="form-control" asp-for="usuarioInfo.fechaNacimiento">
     </div>
-
-    <div class="row mb-3">
-        <label class="col-form-label-sm col-form-label">Teléfono</label>
-        <div class="col-sm-6">
-            <input type="text" class="form-control" name="telefono" value="@Model.usuarioInfo.telefono">
-        </div>
+    <div class="form-group">
+        <label>Teléfono</label>
+        <input type="text" class="form-control" asp-for="usuarioInfo.telefono">
     </div>
-
-    <div class="row mb-3">
-        <label class="col-form-label-sm col-form-label">Correo</label>
-        <div class="col-sm-6">
-            <input type="text" class="form-control" name="correo" value="@Model.usuarioInfo.correo">
-        </div>
+    <div class="form-group">
+        <label>Correo</label>
+        <input type="email" class="form-control" asp-for="usuarioInfo.correo">
     </div>
-
-    <div class="row mb-3">
-        <label class="col-form-label-sm col-form-label">Dirección</label>
-        <div class="col-sm-6">
-            <input type="text" class="form-control" name="direccion" value="@Model.usuarioInfo.direccion">
-        </div>
+    <div class="form-group">
+        <label>Dirección</label>
+        <input type="text" class="form-control" asp-for="usuarioInfo.direccion">
     </div>
-
-
-    <div class="row mb-3">
-        <label class="col-form-label-sm col-form-label">Seleccione un Rol</label>
-        <div class="col-sm-6">
-            <select class="form-control" asp-for="usuarioInfo.fkIdRol">
-                <option value="">Seleccione un Rol</option>
-                @foreach (var rol in Model.rolInfo)
-                {
-                    <option value="@rol.pkIdRol">@rol.tipo</option>
-                }
-            </select>
-        </div>
+    <div class="form-group">
+        <label>Rol</label>
+        <select class="form-control" asp-for="usuarioInfo.fkIdRol">
+            @foreach (var rol in Model.rolesInfo)
+            {
+                <option value="@rol.pkIdRol" selected="@((rol.pkIdRol == Model.usuarioInfo.fkIdRol))">@rol.tipo</option>
+            }
+        </select>
     </div>
-
-    <div class="row mb-3">
-        <label class="col-form-label-sm col-form-label">Seleccione un Tipo de documento</label>
-        <div class="col-sm-6">
-            <select class="form-control" asp-for="usuarioInfo.fkIdTipoDoc">
-                <option value="">Seleccione un Tipo de documento</option>
-                @foreach (var tipoDoc in Model.tipoDocInfo)
-                {
-                    <option value="@tipoDoc.pkIdTipoDoc">@tipoDoc.tipo</option>
-                }
-            </select>
-        </div>
+    <div class="form-group">
+        <label>Tipo de Documento</label>
+        <select class="form-control" asp-for="usuarioInfo.fkIdTipoDoc">
+            @foreach (var tipoDoc in Model.tiposDocumentoInfo)
+            {
+                <option value="@tipoDoc.pkIdTipoDoc" selected="@((tipoDoc.pkIdTipoDoc == Model.usuarioInfo.fkIdTipoDoc))">@tipoDoc.tipo</option>
+            }
+        </select>
     </div>
-   
 
     @if (Model.successMessage.Length > 0)
     {
@@ -100,7 +73,7 @@
 
     <div class="row mb-3">
         <div class="offset-sm-3 col-sm-3 d-grid">
-            <button type="submit" class="btn btn-primary">Editar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
         </div>
         <div class="col-sm-3 d-grid">
             <a class="btn btn-outline-primary" href="/Usuarios/Index" role="button">Cancelar</a>

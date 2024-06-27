@@ -11,15 +11,14 @@
 <table class="table">
     <thead>
         <tr>
-            <td>ID</td>
-            <td>Tipo</td>
+            <th>Tipo</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.listRol)
         {
             <tr>
-                <td>@item.pkIdRol</td>
                 <td>@item.tipo</td>
                 <td>
                     <a class="btn btn-primary btn-sm" href="/Roles/Edit?id=@item.pkIdRol">Editar</a>

@@ -9,15 +9,14 @@
 <table class="table">
     <thead>
         <tr>
-            <td>ID</td>
-            <td>Tipo</td>
+            <th>Tipo</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.listTipoDoc)
         {
             <tr>
-                <td>@item.pkIdTipoDoc</td>
                 <td>@item.tipo</td>
 
                 <td>

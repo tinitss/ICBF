@@ -1,45 +1,44 @@
-﻿    @page
-    @model ICBFApp.Pages.Usuarios.IndexModel
-    @{
-    }
+﻿@page
+@model ICBFApp.Pages.Usuarios.IndexModel
+@{
+    ViewData["Title"] = "Lista de Usuarios";
+}
 
-    <br />
-    <h2>Lista de Usuarios</h2>
-    <a class="btn btn-primary btn-sm" href="/Usuarios/Create">Nuevo Usuario</a>
+<br />
+<h2>Lista de Usuarios</h2>
+<a class="btn btn-primary btn-sm" href="/Usuarios/Create">Nuevo Usuario</a>
 
-    <table class="table">
-        <thead>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Identificación</th>
+            <th>Nombre</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Teléfono</th>
+            <th>Correo</th>
+            <th>Dirección</th>
+            <th>Rol</th>
+            <th>Tipo de Documento</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.listUsuarios)
+        {
             <tr>
-                <td>ID</td>
-                <td>Nombre</td>
-                <td>Identificacion</td>
-                <td>Fecha de Nacimiento</td>
-                <td>Teléfono</td>
-                <td>Correo</td>
-                <td>Dirección</td>
-                <td>Rol</td>
-                <td>Tipo Documento</td>
-                <td>Acciones</td>
+                <td>@item.identificacion</td>
+                <td>@item.nombre</td>
+                <td>@item.fechaNacimiento.ToShortDateString()</td>
+                <td>@item.telefono</td>
+                <td>@item.correo</td>
+                <td>@item.direccion</td>
+                <td>@item.nombre_rol</td>
+                <td>@item.nombre_tipo_doc</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" href="/Usuarios/Edit?id=@item.pkIdUsuario">Editar</a>
+                    <a class="btn btn-danger btn-sm" href="/Usuarios/Delete?id=@item.pkIdUsuario">Borrar</a>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.listUsuario)
-            {
-                <tr>
-                    <td>@item.pkIdUsuario</td>
-                    <td>@item.identificacion</td>         
-                    <td>@item.nombre</td>
-                    <td>@item.fechaNacimiento</td>
-                    <td>@item.telefono</td>
-                    <td>@item.correo</td>
-                    <td>@item.direccion</td>
-                    <td>@item.nombre_rol</td>
-                    <td>@item.nombre_tipodoc</td>
-                    <td>
-                        <a class="btn btn-primary btn-sm" href="/Usuarios/Edit?id=@item.pkIdUsuario">Editar</a>
-                        <a class="btn btn-danger btn-sm" href="/Usuarios/Delete?id=@item.pkIdUsuario">Borrar</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>

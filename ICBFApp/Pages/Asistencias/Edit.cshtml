@@ -1,0 +1,42 @@
+﻿@page
+@model ICBFApp.Pages.Asistencias.EditModel
+@{
+    ViewData["Title"] = "Editar Asistencia";
+}
+
+<h2>Editar Asistencia</h2>
+
+@if (!string.IsNullOrEmpty(Model.errorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @Model.errorMessage
+    </div>
+}
+
+<form method="post">
+    <input type="hidden" asp-for="Asistencia.pkIdAsistencia" />
+    <div class="form-group">
+        <label>Fecha de Asistencia</label>
+        <input type="date" class="form-control" asp-for="Asistencia.fecha" value="@Model.Asistencia.fecha.ToString("yyyy-MM-dd")">
+    </div>
+    <div class="form-group">
+        <label>Descripción del Estado</label>
+        <select class="form-control" asp-for="Asistencia.descripcionEstado">
+            <option value="Enfermo">Enfermo</option>
+            <option value="Sano">Sano</option>
+            <option value="Decaido">Decaido</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Niño</label>
+        <select class="form-control" asp-for="Asistencia.fkIdNino">
+            @foreach (var nino in Model.listNinos)
+            {
+                <option value="@nino.pkIdNino" selected="@((nino.pkIdNino == Model.Asistencia.fkIdNino))">@nino.niup</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+</form>
+
+@* Importante: Asegúrate de tener los espacios de nombres correctos y las clases de modelo dentro de tu archivo EditModel *@

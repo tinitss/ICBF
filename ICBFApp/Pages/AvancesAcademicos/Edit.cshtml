@@ -1,0 +1,58 @@
+﻿@page
+@model ICBFApp.Pages.AvancesAcademicos.EditModel
+@{
+    ViewData["Title"] = "Editar Avance Académico";
+}
+
+<h2>Editar Avance Académico</h2>
+
+@if (!string.IsNullOrEmpty(Model.errorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @Model.errorMessage
+    </div>
+}
+
+<form method="post">
+    <input type="hidden" asp-for="AvanceAcademico.pkIdAvance" />
+    <div class="form-group">
+        <label>Fecha de Nota</label>
+        <input type="date" class="form-control" asp-for="AvanceAcademico.fechaNota">
+    </div>
+    <div class="form-group">
+        <label>Descripción</label>
+        <input type="text" class="form-control" asp-for="AvanceAcademico.descripcion">
+    </div>
+    <div class="form-group">
+        <label>Año Escolar</label>
+        <input type="number" class="form-control" asp-for="AvanceAcademico.anoEscolar" min="2000" max="2100" step="1">
+    </div>
+    <div class="form-group">
+        <label>Nivel</label>
+        <select class="form-control" asp-for="AvanceAcademico.nivel">
+            <option value="Natal">Natal</option>
+            <option value="Prenatal">Prenatal</option>
+            <option value="Párvulo">Párvulo</option>
+            <option value="Jardin">Jardin</option>
+            <option value="Pre-Jardin">Pre-Jardin</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Notas</label>
+        <select class="form-control" asp-for="AvanceAcademico.notas">
+            <option value="Superior">Superior</option>
+            <option value="Alto">Alto</option>
+            <option value="Bajo">Bajo</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Niño</label>
+        <select class="form-control" asp-for="AvanceAcademico.fkIdNino">
+            @foreach (var nino in Model.listNinos)
+            {
+                <option value="@nino.pkIdNino" selected="@((nino.pkIdNino == Model.AvanceAcademico.fkIdNino))">@nino.niup</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+</form>

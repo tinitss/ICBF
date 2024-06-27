@@ -34,7 +34,7 @@ namespace ICBFApp.Pages.TipoDoc
                 {
                     connection.Open();
 
-                    //VERIFICA QUE EL ADMINISTRADOR NO EXISTA
+                    //VERIFICA QUE EL TIPO DE DOCUMENTO NO EXISTA
                     String sqlExists = "SELECT COUNT(*) FROM tipoDoc WHERE tipo = @tipo";
                     using (SqlCommand commandCheck = new SqlCommand(sqlExists, connection))
                     {
@@ -49,7 +49,7 @@ namespace ICBFApp.Pages.TipoDoc
                         }
                     }
 
-                    // Espacio para validar que el rol no exista
+                    
                     String sqlInsert = "INSERT INTO tipoDoc (tipo)" +
                         "VALUES (@tipo);";
 

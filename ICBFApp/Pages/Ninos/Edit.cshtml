@@ -1,21 +1,20 @@
 ﻿@page
-@model ICBFApp.Pages.Ninos.CreateModel
+@model ICBFApp.Pages.Ninos.EditModel
 @{
-    ViewData["Title"] = "Crear Niño";
+    ViewData["Title"] = "Editar Niño";
 }
 
-<h2>Crear Niño</h2>
+<h2>Editar Niño</h2>
 
-@if (Model.errorMessage.Length > 0)
+@if (!string.IsNullOrEmpty(Model.errorMessage))
 {
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong>@Model.errorMessage</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+    <div class="alert alert-danger" role="alert">
+        @Model.errorMessage
     </div>
 }
 
-
 <form method="post">
+    <input type="hidden" asp-for="ninoInfo.pkIdNino" />
     <div class="form-group">
         <label>NIUP</label>
         <input type="text" class="form-control" asp-for="ninoInfo.niup">
@@ -46,7 +45,7 @@
         <select class="form-control" asp-for="ninoInfo.fkIdEps">
             @foreach (var eps in Model.epsInfo)
             {
-                <option value="@eps.pkIdEps">@eps.nombre</option>
+                <option value="@eps.pkIdEps" selected="@((eps.pkIdEps == Model.ninoInfo.fkIdEps))">@eps.nombre</option>
             }
         </select>
     </div>
@@ -55,7 +54,7 @@
         <select class="form-control" asp-for="ninoInfo.fkIdJardin">
             @foreach (var jardin in Model.jardinInfo)
             {
-                <option value="@jardin.pkIdJardin">@jardin.nombre</option>
+                <option value="@jardin.pkIdJardin" selected="@((jardin.pkIdJardin == Model.ninoInfo.fkIdJardin))">@jardin.nombre</option>
             }
         </select>
     </div>
@@ -64,9 +63,29 @@
         <select class="form-control" asp-for="ninoInfo.fkIdUsuario">
             @foreach (var usuario in Model.usuarioInfo)
             {
-                <option value="@usuario.pkIdUsuario">@usuario.nombre</option>
+                <option value="@usuario.pkIdUsuario" selected="@((usuario.pkIdUsuario == Model.ninoInfo.fkIdUsuario))">@usuario.nombre</option>
             }
         </select>
     </div>
-    <button type="submit" class="btn btn-primary">Crear Niño</button>
+
+    @if (Model.successMessage.Length > 0)
+    {
+        <div class="row mb-3">
+            <div class="col-sm-9">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>@Model.successMessage</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row mb-3">
+        <div class="offset-sm-3 col-sm-3 d-grid">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+        <div class="col-sm-3 d-grid">
+            <a class="btn btn-outline-primary" href="/TipoDoc/Index" role="button">Cancelar</a>
+        </div>
+    </div>
 </form>

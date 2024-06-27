@@ -1,0 +1,33 @@
+﻿@page
+@model ICBFApp.Pages.Asistencias.IndexModel
+@{
+    ViewData["Title"] = "Lista de Asistencias";
+}
+
+<h2>Lista de Asistencias</h2>
+<a class="btn btn-primary btn-sm" href="/Asistencias/Create">Nueva Asistencia</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Descripción del Estado</th>
+            <th>NIUP del Niño</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.listAsistencias)
+        {
+            <tr>
+                <td>@item.fecha.ToShortDateString()</td>
+                <td>@item.descripcionEstado</td>
+                <td>@item.niupNino</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" href="/Asistencias/Edit?id=@item.pkIdAsistencia">Editar</a>
+                    <a class="btn btn-danger btn-sm" href="/Asistencias/Delete?id=@item.pkIdAsistencia">Borrar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

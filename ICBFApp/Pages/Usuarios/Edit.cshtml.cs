@@ -1,227 +1,197 @@
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Data.SqlClient;
-using static ICBFApp.Pages.Roles.IndexModel;
-using static ICBFApp.Pages.TipoDoc.IndexModel;
-using static ICBFApp.Pages.Usuarios.IndexModel;
 
 namespace ICBFApp.Pages.Usuarios
 {
     public class EditModel : PageModel
     {
-        //CONEXIÓN
-        //String connectionString = "Data Source=GAES3\\SQLEXPRESS;Initial Catalog=ICBF;Integrated Security=True;";
-        String connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True";
+        string connectionString = "Data Source=(localdb)\\SERVIDOR_MELO;Initial Catalog=ICBF;Integrated Security=True;";
 
-        public List<RolInfo> rolInfo { get; set; } = new List<RolInfo>();
-        public List<TipoDocInfo> tipoDocInfo { get; set; } = new List<TipoDocInfo>();
-        public UsuarioInfo usuarioInfo = new UsuarioInfo();
-        public string errorMessage = "";
-        public string successMessage = "";
-        
-        public void OnGet()
+        [BindProperty]
+        public UsuarioInfo usuarioInfo { get; set; }
+
+        public List<RolInfo> rolesInfo { get; set; } = new List<RolInfo>();
+        public List<TipoDocumentoInfo> tiposDocumentoInfo { get; set; } = new List<TipoDocumentoInfo>();
+        public string errorMessage { get; set; } = "";
+        public string successMessage { get; set; } = "";
+
+        public IActionResult OnGet(int id)
         {
-            String id = Request.Query["id"];
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    String sql = "SELECT * FROM usuarios WHERE pkIdUsuario = @id";
-                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    string sqlSelect = @"
+                        SELECT u.pkIdUsuario, u.identificacion, u.nombre, u.fechaNacimiento, u.telefono, 
+                               u.correo, u.direccion, u.fkIdRol, u.fkIdTipoDoc, r.tipo AS nombre_rol, td.tipo AS nombre_tipo_doc
+                        FROM usuarios u
+                        INNER JOIN roles r ON u.fkIdRol = r.pkIdRol
+                        INNER JOIN tipoDoc td ON u.fkIdTipoDoc = td.pkIdTipoDoc
+                        WHERE u.pkIdUsuario = @id";
+
+                    using (SqlCommand command = new SqlCommand(sqlSelect, connection))
                     {
                         command.Parameters.AddWithValue("@id", id);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.Read())
                             {
-                                usuarioInfo.pkIdUsuario = "" + reader.GetInt32(0);
-                                usuarioInfo.identificacion = reader.GetString(1);
-                                usuarioInfo.nombre = reader.GetString(2);
-                                usuarioInfo.fechaNacimiento = reader.GetDateTime(3).ToString();
-                                usuarioInfo.telefono = reader.GetString(4);
-                                usuarioInfo.correo = reader.GetString(5);
-                                usuarioInfo.direccion = reader.GetString(6);
-                                usuarioInfo.fkIdRol = reader.GetInt32(7).ToString();
-                                usuarioInfo.fkIdTipoDoc = reader.GetInt32(8).ToString();
-
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                errorMessage = ex.Message;
-                return;
-            }
-        
-
-            try
-            {               
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-                    String sql = "SELECT pkIdRol, tipo FROM roles";
-                    
-                    using (SqlCommand command = new SqlCommand(sql, connection))
-                    {
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            Console.WriteLine(reader);
-                            // Verificar si hay filas en el resultado antes de intentar leer
-                            if (reader.HasRows)
-                            {
-                                Console.WriteLine("Se encontraron filas en la tabla roles.");
-                                while (reader.Read())
+                                usuarioInfo = new UsuarioInfo
                                 {
-                                    var pkIdRol = reader.GetInt32(0).ToString();
-                                    var tipo = reader.GetString(1);
-
-                                    Console.WriteLine("pkIdRol: {0}, tipo: {1}", pkIdRol, tipo);
-
-                                    rolInfo.Add(new RolInfo
-                                    {
-                                        pkIdRol = reader.GetInt32(0).ToString(),
-                                        tipo = reader.GetString(1)
-                                    });
-
-                                    Console.WriteLine("rolInfo Count: " + rolInfo.Count);
-                                    foreach (var rol in rolInfo)
-                                    {
-                                        Console.WriteLine("List item - pkIdRol: {0}, tipo: {1}", rol.pkIdRol, rol.tipo);
-                                    }
-                                }
+                                    pkIdUsuario = reader.GetInt32(0).ToString(),
+                                    identificacion = reader.GetString(1),
+                                    nombre = reader.GetString(2),
+                                    fechaNacimiento = reader.GetDateTime(3),
+                                    telefono = reader.GetString(4),
+                                    correo = reader.GetString(5),
+                                    direccion = reader.GetString(6),
+                                    fkIdRol = reader.GetInt32(7).ToString(),
+                                    fkIdTipoDoc = reader.GetInt32(8).ToString(),
+                                    nombre_rol = reader.GetString(9),
+                                    nombre_tipo_doc = reader.GetString(10)
+                                };
                             }
                             else
                             {
-                                Console.WriteLine("No hay filas en el resultado.");
-                                Console.WriteLine("No se encontraron datos en la tabla roles.");
+                                errorMessage = "No se encontró el usuario con el ID especificado.";
+                                return RedirectToPage("/Usuarios/Index");
                             }
                         }
                     }
-
                 }
-            }
 
-            catch (Exception ex)
-            {
-                errorMessage = ex.Message;
-            }
-
-
-            try
-            {
-
+                // Obtener información de Roles
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    String sql = "SELECT pkIdTipoDoc, tipo FROM tipoDoc";
-                    //Console.WriteLine(sql);
-                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    string sqlRoles = "SELECT pkIdRol, tipo FROM roles";
+                    using (SqlCommand command = new SqlCommand(sqlRoles, connection))
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            Console.WriteLine(reader);
-                            // Verificar si hay filas en el resultado antes de intentar leer
-                            if (reader.HasRows)
+                            while (reader.Read())
                             {
-                                Console.WriteLine("Se encontraron filas en la tabla Tipo de Documento.");
-                                while (reader.Read())
+                                rolesInfo.Add(new RolInfo
                                 {
-                                    var pkIdTipoDoc = reader.GetInt32(0).ToString();
-                                    var tipo = reader.GetString(1);
-
-                                    Console.WriteLine("pkIdTipoDoc: {0}, tipo: {1}", pkIdTipoDoc, tipo);
-
-                                    tipoDocInfo.Add(new TipoDocInfo
-                                    {
-                                        pkIdTipoDoc = reader.GetInt32(0).ToString(),
-                                        tipo = reader.GetString(1)
-                                    });
-
-                                    Console.WriteLine("tipoDocInfo Count: " + tipoDocInfo.Count);
-                                    foreach (var tipoDoc in tipoDocInfo)
-                                    {
-                                        Console.WriteLine("List item - pkIdTipoDoc: {0}, tipo: {1}", tipoDoc.pkIdTipoDoc, tipoDoc.tipo);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("No hay filas en el resultado.");
-                                Console.WriteLine("No se encontraron datos en la tabla Tipo de Documento.");
+                                    pkIdRol = reader.GetInt32(0).ToString(),
+                                    tipo = reader.GetString(1)
+                                });
                             }
                         }
                     }
-
                 }
-            }
 
+                // Obtener información de Tipos de Documento
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string sqlTiposDocumento = "SELECT pkIdTipoDoc, tipo FROM tipoDoc";
+                    using (SqlCommand command = new SqlCommand(sqlTiposDocumento, connection))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                tiposDocumentoInfo.Add(new TipoDocumentoInfo
+                                {
+                                    pkIdTipoDoc = reader.GetInt32(0).ToString(),
+                                    tipo = reader.GetString(1)
+                                });
+                            }
+                        }
+                    }
+                }
+
+                return Page();
+            }
             catch (Exception ex)
             {
-                errorMessage = ex.Message;
+                errorMessage = "Error al cargar los datos del usuario: " + ex.Message;
+                return RedirectToPage("/Usuarios/Index");
             }
         }
-        
-        public void OnPost()
+
+        public IActionResult OnPost()
         {
-            usuarioInfo.pkIdUsuario = Request.Form["id"];
-            usuarioInfo.identificacion = Request.Form["identificacion"];
-            usuarioInfo.nombre = Request.Form["nombre"];
-            usuarioInfo.fechaNacimiento = Request.Form["fechaNacimiento"];
-            usuarioInfo.telefono = Request.Form["telefono"];
-            usuarioInfo.correo = Request.Form["correo"];
-            usuarioInfo.direccion = Request.Form["direccion"];
-            usuarioInfo.fkIdRol = Request.Form["fkIdRol"];
-            usuarioInfo.fkIdTipoDoc = Request.Form["fkIdTipoDoc"];
-            
-
-
-
-            if (usuarioInfo.pkIdUsuario.Length == 0 || usuarioInfo.identificacion.Length == 0 
-                || usuarioInfo.nombre.Length == 0 || usuarioInfo.fechaNacimiento.Length == 0
-                || usuarioInfo.telefono.Length == 0 || usuarioInfo.correo.Length == 0
-                || usuarioInfo.direccion.Length == 0 )
-            {
-                errorMessage = "Debe completar todos los campos";
-                return;
-            }
-
             try
             {
+                // Validaciones de datos
+                int rolId, tipoDocId;
+                DateTime fechaNacimiento;
+                if (!int.TryParse(usuarioInfo.fkIdRol, out rolId) ||
+                    !int.TryParse(usuarioInfo.fkIdTipoDoc, out tipoDocId) ||
+                    !DateTime.TryParseExact(usuarioInfo.fechaNacimiento.ToString("yyyy-MM-dd"), "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out fechaNacimiento))
+                {
+                    errorMessage = "Error en la conversión de datos.";
+                    return Page(); // Retorna la página con el mensaje de error
+                }
+
+                // Actualizar en la base de datos
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    String sqlUpdate = "UPDATE usuarios SET identificacion = @identificacion, nombre = @nombre, " +
-                        "fechaNacimiento = @fechaNacimiento, telefono = @telefono,  correo = @correo,  direccion = @direccion," +
-                        " fkIdRol = @fkIdRol,  fkIdTipoDoc = @fkIdTipoDoc WHERE pkIdUsuario = @id";
+                    string sqlUpdate = @"
+                        UPDATE usuarios
+                        SET identificacion = @identificacion, nombre = @nombre, fechaNacimiento = @fechaNacimiento,
+                            telefono = @telefono, correo = @correo, direccion = @direccion, fkIdRol = @rolId, fkIdTipoDoc = @tipoDocId
+                        WHERE pkIdUsuario = @id";
+
                     using (SqlCommand command = new SqlCommand(sqlUpdate, connection))
                     {
-                        command.Parameters.AddWithValue("@id", usuarioInfo.pkIdUsuario);
                         command.Parameters.AddWithValue("@identificacion", usuarioInfo.identificacion);
                         command.Parameters.AddWithValue("@nombre", usuarioInfo.nombre);
-                        command.Parameters.AddWithValue("@fechaNacimiento", usuarioInfo.fechaNacimiento);
+                        command.Parameters.AddWithValue("@fechaNacimiento", fechaNacimiento);
                         command.Parameters.AddWithValue("@telefono", usuarioInfo.telefono);
                         command.Parameters.AddWithValue("@correo", usuarioInfo.correo);
                         command.Parameters.AddWithValue("@direccion", usuarioInfo.direccion);
-                        command.Parameters.AddWithValue("@fkIdRol", usuarioInfo.fkIdRol);
-                        command.Parameters.AddWithValue("@fkIdTipoDoc", usuarioInfo.fkIdTipoDoc);
-                        
+                        command.Parameters.AddWithValue("@rolId", rolId);
+                        command.Parameters.AddWithValue("@tipoDocId", tipoDocId);
+                        command.Parameters.AddWithValue("@id", usuarioInfo.pkIdUsuario);
+
                         command.ExecuteNonQuery();
                     }
                 }
+
+                successMessage = "Usuario actualizado exitosamente.";
+                return RedirectToPage("/Usuarios/Index"); // Redirige a la página de lista de usuarios
             }
             catch (Exception ex)
             {
-                errorMessage = ex.Message;
-                return;
+                errorMessage = "Error al actualizar el usuario: " + ex.Message;
+                return Page(); // Retorna la página con el mensaje de error
             }
+        }
 
-            Response.Redirect("/Usuarios/Index");
+        public class RolInfo
+        {
+            public string pkIdRol { get; set; }
+            public string tipo { get; set; }
+        }
+
+        public class TipoDocumentoInfo
+        {
+            public string pkIdTipoDoc { get; set; }
+            public string tipo { get; set; }
+        }
+
+        public class UsuarioInfo
+        {
+            public string pkIdUsuario { get; set; }
+            public string identificacion { get; set; }
+            public string nombre { get; set; }
+            public DateTime fechaNacimiento { get; set; }
+            public string telefono { get; set; }
+            public string correo { get; set; }
+            public string direccion { get; set; }
+            public string fkIdRol { get; set; }
+            public string fkIdTipoDoc { get; set; }
+
+            public string nombre_rol { get; set; }
+            public string nombre_tipo_doc { get; set; }
         }
     }
 }
-

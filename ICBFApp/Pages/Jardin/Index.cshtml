@@ -9,18 +9,16 @@
 <table class="table">
     <thead>
         <tr>
-            <td>ID</td>
-            <td>Nombre</td>
-            <td>Dirección</td>
-            <td>Estado</td>
-            <td>Acciones</td>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Estado</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.listJardin)
         {
             <tr>
-                <td>@item.pkIdJardin</td>
                 <td>@item.nombre</td>
                 <td>@item.direccion</td>
                 <td>@item.estado</td>

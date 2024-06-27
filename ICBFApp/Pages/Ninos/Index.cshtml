@@ -11,7 +11,6 @@
 <table class="table">
     <thead>
         <tr>
-            <th>ID</th>
             <th>NIUP</th>
             <th>Nombre</th>
             <th>Fecha de Nacimiento</th>
@@ -27,7 +26,6 @@
         @foreach (var item in Model.listNinos)
         {
             <tr>
-                <td>@item.pkIdNino</td>
                 <td>@item.niup</td>
                 <td>@item.nombre</td>
                 <td>@item.fechaNacimiento.ToShortDateString()</td>

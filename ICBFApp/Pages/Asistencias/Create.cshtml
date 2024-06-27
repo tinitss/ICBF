@@ -1,0 +1,40 @@
+﻿@page
+@model ICBFApp.Pages.Asistencias.CreateModel
+@{
+    ViewData["Title"] = "Registrar Asistencia";
+}
+
+<h2>Registrar Asistencia</h2>
+
+@if (!string.IsNullOrEmpty(Model.errorMessage))
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>@Model.errorMessage</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+    </div>
+}
+
+<form method="post">
+    <div class="form-group">
+        <label>Fecha</label>
+        <input type="date" class="form-control" asp-for="Asistencia.fecha">
+    </div>
+    <div class="form-group">
+        <label>Descripción del Estado</label>
+        <select class="form-control" asp-for="Asistencia.descripcionEstado">
+            <option value="Enfermo">Enfermo</option>
+            <option value="Sano">Sano</option>
+            <option value="Decaido">Decaido</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>NIUP del Niño</label>
+        <select class="form-control" asp-for="Asistencia.fkIdNino">
+            @foreach (var nino in Model.listNinos)
+            {
+                <option value="@nino.pkIdNino">@nino.niup</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Registrar Asistencia</button>
+</form>
